@@ -1,7 +1,11 @@
 class modifiedErrorHandler extends Error {
-  status: string | undefined;
+  status: number;
   payload: any;
-  constructor(status: string | any, message: string | any, payload: any) {
+  constructor(
+    status: number = 500,
+    message: string = "Server Error",
+    payload: any = { errorReport: "Please see code" }
+  ) {
     super();
     this.status = status;
     this.message = message;

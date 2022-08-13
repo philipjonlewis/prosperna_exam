@@ -1,3 +1,6 @@
+import path from "path";
+const scriptName = path.basename(__filename);
+
 import { Request, Response, RequestHandler, NextFunction } from "express";
 
 import asyncHandler from "../../handlers/asyncHandler";
@@ -12,11 +15,14 @@ const signUpAuthenticator = asyncHandler(
           email: res.locals.validatedSignUpUserData.email,
         })
       )
-        throw new ErrorHandler(500, "SignUp Authentication Error", {});
+        throw new ErrorHandler(401, "User Signup Authentication Error");
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error);
+      throw new ErrorHandler(error.status, error.message, {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
     //if email and password exists do not process
   }
@@ -25,7 +31,6 @@ const signUpAuthenticator = asyncHandler(
 const logInAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       if (
         await UserAuth.exists({
           email: res.locals.validatedLogInUserData.email,
@@ -34,9 +39,12 @@ const logInAuthenticator = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(500, "LogIn Authentication Error", {});
+      throw new ErrorHandler(401, "User Log In Authentication Error", {});
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error?.message, error);
+      throw new ErrorHandler(error.status, error.message, {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -52,9 +60,12 @@ const verifyUserAuthenticator = asyncHandler(
         res.locals.isUserVerified = true;
         return next();
       }
-      throw new ErrorHandler(500, "Verify User Authentication Error", {});
+      throw new ErrorHandler(401, "User Verification Authentication Error", {});
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error?.message, {});
+      throw new ErrorHandler(error.status, error.message, {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -68,9 +79,12 @@ const userCredentialsAuthenticator = asyncHandler(
         })
       )
         return next();
-      throw new ErrorHandler(500, "User Credentials Authenticator", {});
+      throw new ErrorHandler(401, "User Credentials Authentication Error", {});
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, error);
+      throw new ErrorHandler(error.status, error.message, {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;

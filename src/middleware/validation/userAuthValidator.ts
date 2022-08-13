@@ -1,3 +1,6 @@
+import path from "path";
+const scriptName = path.basename(__filename);
+
 import express, {
   Express,
   Request,
@@ -35,7 +38,6 @@ const signUpUserDataValidator = asyncHandler(
       await signUpUserDataValidationSchema
         .validateAsync(sanitizedSignUpUserData, validationOptions)
         .then(({ value, warning, debug }: any) => {
-       
           res.locals.validatedSignUpUserData = { ...value };
           delete res.locals.sanitizedSignUpUserData;
           return next();
@@ -45,12 +47,16 @@ const signUpUserDataValidator = asyncHandler(
             409,
             "There seems to be something wrong with the following fields",
             error.details.map((err: any) => {
-              return err;
+              return err.message;
             })
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+      throw new ErrorHandler(422, "User Sign Up Validation Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+        ...(error.payload && { errorContent: error.payload }),
+      });
     }
   }
 ) as RequestHandler;
@@ -74,12 +80,16 @@ const logInUserDataValidator = asyncHandler(
             409,
             "There seems to be something wrong with the following fields",
             error.details.map((err: any) => {
-              return err;
+              return err.message;
             })
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+      throw new ErrorHandler(422, "User Log In Validation Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+        ...(error.payload && { errorContent: error.payload }),
+      });
     }
   }
 ) as RequestHandler;
@@ -108,7 +118,11 @@ const updateUserEmailValidator = asyncHandler(
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+      throw new ErrorHandler(422, "User Update Email Validation Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+        ...(error.payload && { errorContent: error.payload }),
+      });
     }
   }
 ) as RequestHandler;
@@ -137,7 +151,11 @@ const updateUserPasswordValidator = asyncHandler(
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+      throw new ErrorHandler(422, "User Update Password Validation Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+        ...(error.payload && { errorContent: error.payload }),
+      });
     }
   }
 ) as RequestHandler;
@@ -166,7 +184,11 @@ const deleteUserDataValidator = asyncHandler(
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+      throw new ErrorHandler(422, "User Deletion Validation Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+        ...(error.payload && { errorContent: error.payload }),
+      });
     }
   }
 ) as RequestHandler;

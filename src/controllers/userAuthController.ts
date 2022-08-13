@@ -1,3 +1,6 @@
+import path from "path";
+const scriptName = path.basename(__filename);
+
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
@@ -47,11 +50,11 @@ const signUpUserDataController = asyncHandler(
       await newUser.save();
 
       return res
+        .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
         .cookie("authentication-access", accessToken, accessCookieOptions)
         .json({
-          code: 200,
-          status: true,
+          success: true,
           message: "Successfully Signed Up",
           payload: {
             _id: _id.toString(),
@@ -59,85 +62,113 @@ const signUpUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, error);
+      throw new ErrorHandler(error.status, "User Sign Up Controller Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
 
 const loginUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { validatedLogInUserData, useragent }: any = res.locals;
+    try {
+      const { validatedLogInUserData, useragent }: any = res.locals;
 
-    const existingUser = await UserAuth.find({
-      email: validatedLogInUserData.email,
-    })
-      .select("+email +password +passwordConfirmation +userAgent -__v")
-      .limit(1);
+      const existingUser = await UserAuth.find({
+        email: validatedLogInUserData.email,
+      })
+        .select("+email +password +passwordConfirmation +userAgent -__v")
+        .limit(1);
 
-    const { _id, email, password, passwordConfirmation, userAgent } =
-      existingUser[0];
+      const { _id, email, password, passwordConfirmation, userAgent } =
+        existingUser[0];
 
-    const isUserValid =
-      (await bcrypt.compare(validatedLogInUserData.password, password)) &&
-      (await bcrypt.compare(
-        validatedLogInUserData.password,
-        passwordConfirmation
-      ));
+      const isUserValid =
+        (await bcrypt.compare(validatedLogInUserData.password, password)) &&
+        (await bcrypt.compare(
+          validatedLogInUserData.password,
+          passwordConfirmation
+        ));
 
-    if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
 
-    const refreshToken = await signedRefreshToken(_id.toString(), email);
-    const accessToken = await signedAccessToken(_id.toString(), email);
+      const refreshToken = await signedRefreshToken(_id.toString(), email);
+      const accessToken = await signedAccessToken(_id.toString(), email);
 
-    await UserAuth.findByIdAndUpdate(_id, {
-      refreshTokens: refreshToken,
-      accessTokens: accessToken,
-      ...(useragent && {
-        userAgent: [{ ...(await userAgentCleaner(useragent)) }],
-      }),
-    });
-
-    delete res.locals.validatedLogInUserData;
-
-    return res
-      .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
-      .cookie("authentication-access", accessToken, accessCookieOptions)
-      .json({
-        code: 200,
-        status: true,
-        message: "Successfully logged in",
-        payload: {
-          _id,
-          email,
-        },
+      await UserAuth.findByIdAndUpdate(_id, {
+        refreshTokens: refreshToken,
+        accessTokens: accessToken,
+        ...(useragent && {
+          userAgent: [{ ...(await userAgentCleaner(useragent)) }],
+        }),
       });
+
+      delete res.locals.validatedLogInUserData;
+
+      return res
+        .status(200)
+        .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
+        .cookie("authentication-access", accessToken, accessCookieOptions)
+        .json({
+          success: true,
+          message: "Successfully logged in",
+          payload: {
+            _id,
+            email,
+          },
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error.status, "User Log In Controller Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
+    }
   }
 ) as RequestHandler;
 
 const logOutUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    res
-      .clearCookie("authentication-refresh", clearAuthCookieOptions)
-      .clearCookie("authentication-access", clearAuthCookieOptions);
-    return res.json({
-      message: "Logged Out",
-    });
+    try {
+      res
+        .status(200)
+        .clearCookie("authentication-refresh", clearAuthCookieOptions)
+        .clearCookie("authentication-access", clearAuthCookieOptions);
+      return res.json({
+        success: true,
+        message: "Logged Out",
+      });
+    } catch (error: any) {
+      throw new ErrorHandler(error.status, "User Log Out Controller Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
+    }
   }
 ) as RequestHandler;
 
 const verifyUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { isUserVerified }: any = res.locals;
+    try {
+      const { isUserVerified }: any = res.locals;
 
-    if (!isUserVerified)
-      throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserVerified)
+        throw new ErrorHandler(401, "Try Logging in again", {});
 
-    return res.json({
-      code: 200,
-      status: true,
-      message: "User is still logged in",
-      payload: {},
-    });
+      return res.status(200).json({
+        success: true,
+        message: "User is still logged in",
+      });
+    } catch (error: any) {
+      throw new ErrorHandler(
+        error.status,
+        "User Verification Controller Error",
+        {
+          possibleError: error.message,
+          errorLocation: scriptName,
+        }
+      );
+    }
   }
 ) as RequestHandler;
 
@@ -186,11 +217,11 @@ const updateUserEmailController = asyncHandler(
       delete res.locals.validatedEditUserEmail;
 
       return res
+        .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
         .cookie("authentication-access", accessToken, accessCookieOptions)
         .json({
-          code: 200,
-          status: true,
+          success: true,
           message: "Successfully changed email",
           payload: {
             _id,
@@ -199,7 +230,15 @@ const updateUserEmailController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, error);
+
+      throw new ErrorHandler(
+        error.status,
+        "Update User Email Controller Error",
+        {
+          possibleError: error.message,
+          errorLocation: scriptName,
+        }
+      );
     }
   }
 ) as RequestHandler;
@@ -260,11 +299,11 @@ const updateUserPasswordController = asyncHandler(
       delete res.locals.validatedEditUserEmail;
 
       return res
+        .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
         .cookie("authentication-access", accessToken, accessCookieOptions)
         .json({
-          code: 200,
-          status: true,
+          success: true,
           message: "Successfully changed password",
           payload: {
             _id,
@@ -272,45 +311,58 @@ const updateUserPasswordController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(500, error?.message, error);
+      throw new ErrorHandler(
+        error.status,
+        "Update User Password Controller Error",
+        {
+          possibleError: error.message,
+          errorLocation: scriptName,
+        }
+      );
     }
   }
 ) as RequestHandler;
 
 const deleteUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { validatedDeleteUserData }: any = res.locals;
+    try {
+      const { validatedDeleteUserData }: any = res.locals;
 
-    const existingUser = await UserAuth.find({
-      email: validatedDeleteUserData.email,
-    })
-      .select("+email +password +passwordConfirmation -__v")
-      .limit(1);
+      const existingUser = await UserAuth.find({
+        email: validatedDeleteUserData.email,
+      })
+        .select("+email +password +passwordConfirmation -__v")
+        .limit(1);
 
-    const { _id, email, password, passwordConfirmation } = existingUser[0];
+      const { _id, email, password, passwordConfirmation } = existingUser[0];
 
-    const isUserValid =
-      (await bcrypt.compare(validatedDeleteUserData.password, password)) &&
-      (await bcrypt.compare(
-        validatedDeleteUserData.password,
-        passwordConfirmation
-      ));
+      const isUserValid =
+        (await bcrypt.compare(validatedDeleteUserData.password, password)) &&
+        (await bcrypt.compare(
+          validatedDeleteUserData.password,
+          passwordConfirmation
+        ));
 
-    if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
 
-    await UserAuth.findByIdAndDelete(_id);
+      await UserAuth.findByIdAndDelete(_id);
 
-    delete res.locals.validatedDeleteUserData;
+      delete res.locals.validatedDeleteUserData;
 
-    return res
-      .clearCookie("authentication-refresh", clearAuthCookieOptions)
-      .clearCookie("authentication-access", clearAuthCookieOptions)
-      .json({
-        code: 200,
-        status: true,
-        message: "Deleted User",
-        payload: {},
+      return res
+        .status(200)
+        .clearCookie("authentication-refresh", clearAuthCookieOptions)
+        .clearCookie("authentication-access", clearAuthCookieOptions)
+        .json({
+          success: true,
+          message: "Deleted User",
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error.status, "Delete User Controller Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
       });
+    }
   }
 ) as RequestHandler;
 

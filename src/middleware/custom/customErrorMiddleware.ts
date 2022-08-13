@@ -15,23 +15,16 @@ const customErrorMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  //Error logging should be universal here
-  const status = error?.status || 500;
-  const message = error?.message || "Something is wrong";
-
-  // payload should only be for logging errors in the database
-  // Make a system to separate errors and log to error DB only the important ones
-
+  const { status, message, payload } = error;
   return (
     res
       // .clearCookie("authentication-refresh", { path: "/" })
       // .clearCookie("authentication-access", { path: "/" })
+      .status(status)
       .json({
-        code: status,
-        status: false,
-        message: message,
-        //remove payload on deployment maybe
-        ...(error.payload ? { payload: error.payload } : { payload: null }),
+        success: false,
+        message,
+        payload,
       })
   );
 };

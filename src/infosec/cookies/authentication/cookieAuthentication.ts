@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+const scriptName = path.basename(__filename);
 
 import jwt from "jsonwebtoken";
 
@@ -13,27 +14,21 @@ const refreshCookieAuthentication = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const refreshCookie = await req.signedCookies["authentication-refresh"];
-      jwt.verify(
-        refreshCookie,
-        process.env.AUTH_TOKEN_KEY as string,
-        async function (error: any, decoded: any) {
-          if (error) {
-            throw new ErrorHandler(error?.status, error?.message, error);
-          }
 
-          if (decoded) {
-            res.locals.refreshTokenAuthenticatedUserId = decoded.token;
-            return next();
-          }
-        }
+      const { token } = jwt.verify(
+        refreshCookie,
+        process.env.AUTH_TOKEN_KEY as string
       ) as any;
+
+      if (token) {
+        res.locals.refreshTokenAuthenticatedUserId = await token;
+        return next();
+      }
     } catch (error: any) {
-      throw new ErrorHandler(
-        error?.status,
-        "Refresh cookie auth error",
-        // error?.message || "Refresh cookie auth error",
-        error.payload || {}
-      );
+      throw new ErrorHandler(400, "Refresh Cookie Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -74,7 +69,7 @@ const accessCookieAuthentication = asyncHandler(
 
               return next();
             } else {
-              throw new ErrorHandler(500, "Access cookie auth error", {});
+              throw new ErrorHandler(400, "Access Cookie Error");
             }
           }
 
@@ -82,13 +77,16 @@ const accessCookieAuthentication = asyncHandler(
             res.locals.accessTokenAuthenticatedUserId =
               await refreshTokenAuthenticatedUserId;
             return next();
-          } else {
-            throw new ErrorHandler(500, "Access cookie auth error", {});
           }
+
+          throw new ErrorHandler(400, "Access Cookie Error");
         }
       ) as any;
     } catch (error: any) {
-      throw new ErrorHandler(error?.status, error?.mesage, error?.payload);
+      throw new ErrorHandler(400, "Access Cookie Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;

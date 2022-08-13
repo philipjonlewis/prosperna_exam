@@ -1,3 +1,6 @@
+import path from "path";
+const scriptName = path.basename(__filename);
+
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import sanitizeHtml from "sanitize-html";
 
@@ -10,6 +13,17 @@ const sanitizationOptions = {
     lowerCaseTags: true,
   },
 };
+
+// async function sanitizerErrorHandler(fn: () => any) {
+//   try {
+//     return await fn(req, res, next);
+//   } catch (error: any) {
+//     throw new ErrorHandler(422, "User Sign Up Sanitization Error", {
+//       possibleError: error.message,
+//       errorLocation: scriptName,
+//     });
+//   }
+// }
 
 const signUpUserDataSanitizer = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +40,10 @@ const signUpUserDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(422, "User Sign Up Sanitization Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -45,7 +62,10 @@ const logInUserDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(422, "User Log In Sanitization Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -63,7 +83,10 @@ const updateUserEmailSanitizer = asyncHandler(
       delete req.body;
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(422, "Update User Email Sanitization Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -82,7 +105,10 @@ const updateUserPasswordSanitizer = asyncHandler(
       delete req.body;
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(422, "Update User Password Sanitization Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -102,7 +128,10 @@ const deleteUserDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(422, "Delete User Sanitization Error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
