@@ -65,6 +65,7 @@ router
   .get([
     refreshCookieAuthentication,
     accessCookieAuthentication,
+    verifyUserAuthenticator,
     logOutUserDataController,
   ]);
 

@@ -35,8 +35,8 @@ const signUpUserDataValidator = asyncHandler(
       await signUpUserDataValidationSchema
         .validateAsync(sanitizedSignUpUserData, validationOptions)
         .then(({ value, warning, debug }: any) => {
+       
           res.locals.validatedSignUpUserData = { ...value };
-
           delete res.locals.sanitizedSignUpUserData;
           return next();
         })

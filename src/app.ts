@@ -91,9 +91,16 @@ app.use(function (req, res, next) {
   next();
 });
 
+// We should add a rate limiter
+
+// app.use("/", (req, res) => {
+//   delete res.locals.validatedSignUpUserData;
+//   console.log(res.locals);
+// });
+
 app.get("/", (req: Request, res: Response) => {
-  console.log("does not crazy");
-  res.send("Homepage");
+  // console.log("does not crazy");
+  res.json({ status: "success" });
   //   res.render("pages", { name: "wilderi" });
   // res.send("authentication server server");
 });
@@ -102,6 +109,12 @@ app.get("/", (req: Request, res: Response) => {
 // app.use("/forms", viewRoutes);
 
 app.use("/user", userAuthRoutes);
+
+app.post("/newuser", (req, res) => {
+  const { username, password, passwordConfirmation } = req.body;
+
+  return res.json({ message: "napakagaling" });
+});
 
 app.get("*", (req, res) => {
   res.send("Page does not exit");

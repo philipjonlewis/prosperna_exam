@@ -26,15 +26,17 @@ const signUpUserDataController = asyncHandler(
         email,
         password,
         passwordConfirmation,
-        userAgent: { ...(await userAgentCleaner(useragent)) },
+        ...(useragent && {
+          userAgent: [{ ...(await userAgentCleaner(useragent)) }],
+        }),
       });
 
       const { _id } = newUser;
 
-      const refreshToken = signedRefreshToken(_id.toString(), email);
-      const accessToken = signedAccessToken(_id.toString(), email);
+      const refreshToken = await signedRefreshToken(_id.toString(), email);
+      const accessToken = await signedAccessToken(_id.toString(), email);
 
-      UserAuth.findByIdAndUpdate(_id, {
+      await UserAuth.findByIdAndUpdate(_id, {
         refreshToken,
         accessToken,
       });
@@ -52,8 +54,8 @@ const signUpUserDataController = asyncHandler(
           status: true,
           message: "Successfully Signed Up",
           payload: {
-            _id,
-            email,
+            _id: _id.toString(),
+            email: email.toString(),
           },
         });
     } catch (error: any) {
@@ -64,15 +66,16 @@ const signUpUserDataController = asyncHandler(
 
 const loginUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    const { validatedLogInUserData }: any = res.locals;
+    const { validatedLogInUserData, useragent }: any = res.locals;
 
     const existingUser = await UserAuth.find({
       email: validatedLogInUserData.email,
     })
-      .select("+email +password +passwordConfirmation -__v")
+      .select("+email +password +passwordConfirmation +userAgent -__v")
       .limit(1);
 
-    const { _id, email, password, passwordConfirmation } = existingUser[0];
+    const { _id, email, password, passwordConfirmation, userAgent } =
+      existingUser[0];
 
     const isUserValid =
       (await bcrypt.compare(validatedLogInUserData.password, password)) &&
@@ -89,6 +92,9 @@ const loginUserDataController = asyncHandler(
     await UserAuth.findByIdAndUpdate(_id, {
       refreshTokens: refreshToken,
       accessTokens: accessToken,
+      ...(useragent && {
+        userAgent: [{ ...(await userAgentCleaner(useragent)) }],
+      }),
     });
 
     delete res.locals.validatedLogInUserData;
@@ -126,7 +132,7 @@ const verifyUserDataController = asyncHandler(
     if (!isUserVerified)
       throw new ErrorHandler(401, "Try Logging in again", {});
 
-    return res.status(200).json({
+    return res.json({
       code: 200,
       status: true,
       message: "User is still logged in",
@@ -280,8 +286,6 @@ const deleteUserDataController = asyncHandler(
     })
       .select("+email +password +passwordConfirmation -__v")
       .limit(1);
-
-
 
     const { _id, email, password, passwordConfirmation } = existingUser[0];
 

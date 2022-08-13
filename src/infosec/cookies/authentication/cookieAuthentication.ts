@@ -13,17 +13,20 @@ const refreshCookieAuthentication = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const refreshCookie = await req.signedCookies["authentication-refresh"];
-
-      const jwtVerificationResults = jwt.verify(
+      jwt.verify(
         refreshCookie,
-        process.env.AUTH_TOKEN_KEY as string
-      ) as any;
+        process.env.AUTH_TOKEN_KEY as string,
+        async function (error: any, decoded: any) {
+          if (error) {
+            throw new ErrorHandler(error?.status, error?.message, error);
+          }
 
-      if (jwtVerificationResults) {
-        res.locals.refreshTokenAuthenticatedUserId =
-          jwtVerificationResults.token;
-        return next();
-      }
+          if (decoded) {
+            res.locals.refreshTokenAuthenticatedUserId = decoded.token;
+            return next();
+          }
+        }
+      ) as any;
     } catch (error: any) {
       throw new ErrorHandler(
         error?.status,

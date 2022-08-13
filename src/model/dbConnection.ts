@@ -9,7 +9,7 @@ const mongooseOptions: any = {
 const dbPort: any =
   process.env.ENVIRONMENT == "development"
     ? process.env.DB_PORT_DEVELOPMENT
-    : process.env.DB_PORT_PRODUCTION;
+    : "";
 
 const databaseConnection = async () => {
   try {

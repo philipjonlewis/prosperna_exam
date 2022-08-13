@@ -1,40 +1,22 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
 
-import fs from "fs";
-import path from "path";
-
-import jwt from "jsonwebtoken";
-
 import asyncHandler from "../../handlers/asyncHandler";
 import ErrorHandler from "../custom/modifiedErrorHandler";
-
 import UserAuth from "../../model/dbModel/userAuthDbModel";
-
-// import { AuthModel } from "../authorization/dbModel";
-
-// import type { TypedResponseBody } from "../../types/commonTypes";
-
-// import type {
-//   AuthenticatedSignUpDataType,
-//   AuthenticatedLogInDataType,
-// } from "../../types/authTypes";
 
 const signUpAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { validatedSignUpUserData } = res.locals;
-
-      const doesUserExist = await UserAuth.exists({
-        email: validatedSignUpUserData.email,
-      });
-
-      if (doesUserExist) {
+      if (
+        await UserAuth.exists({
+          email: res.locals.validatedSignUpUserData.email,
+        })
+      )
         throw new ErrorHandler(500, "SignUp Authentication Error", {});
-      }
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error?.message, {});
+      throw new ErrorHandler(error?.status, error?.message, error);
     }
     //if email and password exists do not process
   }
@@ -43,21 +25,18 @@ const signUpAuthenticator = asyncHandler(
 const logInAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { validatedLogInUserData } = res.locals;
 
-      // console.log(validatedLogInUserData);
-
-      const isUserExisting = await UserAuth.exists({
-        email: validatedLogInUserData?.email,
-      });
-
-      if (isUserExisting) {
+      if (
+        await UserAuth.exists({
+          email: res.locals.validatedLogInUserData.email,
+        })
+      ) {
         return next();
       }
 
       throw new ErrorHandler(500, "LogIn Authentication Error", {});
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error?.message, {});
+      throw new ErrorHandler(error.status, error?.message, error);
     }
   }
 ) as RequestHandler;
@@ -65,16 +44,12 @@ const logInAuthenticator = asyncHandler(
 const verifyUserAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { accessTokenAuthenticatedUserId } = res.locals;
-
-      const isUserExisting = await UserAuth.exists({
-        _id: accessTokenAuthenticatedUserId,
-      });
-
-      if (isUserExisting) {
-        delete res.locals.accessTokenAuthenticatedUserId;
+      if (
+        await UserAuth.exists({
+          _id: res.locals.accessTokenAuthenticatedUserId,
+        })
+      ) {
         res.locals.isUserVerified = true;
-
         return next();
       }
       throw new ErrorHandler(500, "Verify User Authentication Error", {});
@@ -87,19 +62,15 @@ const verifyUserAuthenticator = asyncHandler(
 const userCredentialsAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { accessTokenAuthenticatedUserId } = res.locals;
-
-      const doesUserExist = await UserAuth.exists({
-        _id: accessTokenAuthenticatedUserId.toString(),
-      });
-
-      if (doesUserExist) {
+      if (
+        await UserAuth.exists({
+          _id: res.locals.accessTokenAuthenticatedUserId.toString(),
+        })
+      )
         return next();
-      } else {
-        throw new ErrorHandler(500, "User Credentials Authenticator", {});
-      }
+      throw new ErrorHandler(500, "User Credentials Authenticator", {});
     } catch (error: any) {
-      throw new ErrorHandler(500, error.message, {});
+      throw new ErrorHandler(500, error.message, error);
     }
   }
 ) as RequestHandler;
