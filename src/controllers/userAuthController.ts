@@ -229,6 +229,7 @@ const updateUserPasswordController = asyncHandler(
         _id.toString(),
         validatedEditUserPassword.email
       );
+
       const accessToken = await signedAccessToken(
         _id.toString(),
         validatedEditUserPassword.email
@@ -265,9 +266,47 @@ const updateUserPasswordController = asyncHandler(
           },
         });
     } catch (error: any) {
-      console.error(error);
-      throw new ErrorHandler(500, error.message, error);
+      throw new ErrorHandler(500, error?.message, error);
     }
+  }
+) as RequestHandler;
+
+const deleteUserDataController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { validatedDeleteUserData }: any = res.locals;
+
+    const existingUser = await UserAuth.find({
+      email: validatedDeleteUserData.email,
+    })
+      .select("+email +password +passwordConfirmation -__v")
+      .limit(1);
+
+
+
+    const { _id, email, password, passwordConfirmation } = existingUser[0];
+
+    const isUserValid =
+      (await bcrypt.compare(validatedDeleteUserData.password, password)) &&
+      (await bcrypt.compare(
+        validatedDeleteUserData.password,
+        passwordConfirmation
+      ));
+
+    if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+
+    await UserAuth.findByIdAndDelete(_id);
+
+    delete res.locals.validatedDeleteUserData;
+
+    return res
+      .clearCookie("authentication-refresh", clearAuthCookieOptions)
+      .clearCookie("authentication-access", clearAuthCookieOptions)
+      .json({
+        code: 200,
+        status: true,
+        message: "Deleted User",
+        payload: {},
+      });
   }
 ) as RequestHandler;
 
@@ -278,4 +317,5 @@ export {
   verifyUserDataController,
   updateUserEmailController,
   updateUserPasswordController,
+  deleteUserDataController,
 };

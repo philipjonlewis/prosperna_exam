@@ -77,10 +77,6 @@ userAuthSchema.pre("save", async function (next) {
     this.refreshToken = await refreshToken;
     this.accessToken = await accessToken;
 
-    if (!this.isModified("password")) {
-      return next();
-    }
-    console.log("this should be running");
     this.password = await bcrypt.hash(this.password, 10);
     this.passwordConfirmation = await bcrypt.hash(
       this.passwordConfirmation,
@@ -89,8 +85,7 @@ userAuthSchema.pre("save", async function (next) {
 
     return next();
   } catch (error) {
-    // Make an error log schema and reference this type of error to that
-    console.log(error);
+
     console.log("error from auth user db");
   }
 });

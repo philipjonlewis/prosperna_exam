@@ -41,6 +41,12 @@ const signUpUserDataValidationSchema = Joi.object({
   passwordConfirmation: passwordValidSchemaConfirmation,
 });
 
+const DeleteUserDataValidationSchema = Joi.object({
+  email: emailValidSchema,
+  password: passwordValidSchema,
+  passwordConfirmation: passwordValidSchemaConfirmation,
+});
+
 const LogInUserDataValidationSchema = Joi.object({
   email: emailValidSchema,
   password: passwordValidSchema,
@@ -72,11 +78,6 @@ const EditUserPasswordValidationSchema = Joi.object({
 
   password: passwordValidSchema,
   newPassword: passwordValidSchema,
-});
-
-const DeleteUserDataValidationSchema = Joi.object({
-  email: emailValidSchema,
-  password: passwordValidSchema,
 });
 
 export {

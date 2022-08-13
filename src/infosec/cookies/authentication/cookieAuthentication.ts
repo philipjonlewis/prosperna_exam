@@ -14,10 +14,6 @@ const refreshCookieAuthentication = asyncHandler(
     try {
       const refreshCookie = await req.signedCookies["authentication-refresh"];
 
-      console.log(
-        jwt.verify(refreshCookie, process.env.AUTH_TOKEN_KEY as string)
-      );
-
       const jwtVerificationResults = jwt.verify(
         refreshCookie,
         process.env.AUTH_TOKEN_KEY as string

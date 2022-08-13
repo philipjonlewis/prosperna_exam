@@ -142,6 +142,35 @@ const updateUserPasswordValidator = asyncHandler(
   }
 ) as RequestHandler;
 
+const deleteUserDataValidator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { sanitizedDeleteUserData } = res.locals;
+
+      await DeleteUserDataValidationSchema.validateAsync(
+        sanitizedDeleteUserData,
+        validationOptions
+      )
+        .then(({ value, warning, debug }: any) => {
+          res.locals.validatedDeleteUserData = { ...value };
+          delete res.locals.sanitizedLogInUserData;
+          return next();
+        })
+        .catch((error: any) => {
+          throw new ErrorHandler(
+            409,
+            "There seems to be something wrong with the following fields",
+            error.details.map((err: any) => {
+              return err;
+            })
+          );
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+    }
+  }
+) as RequestHandler;
+
 //   const deleteUserDataValidator = asyncHandler(
 //     async (req: Request, res: Response, next: NextFunction) => {
 //       try {
@@ -176,5 +205,5 @@ export {
   logInUserDataValidator,
   updateUserEmailValidator,
   updateUserPasswordValidator,
-  // deleteUserDataValidator,
+  deleteUserDataValidator,
 };

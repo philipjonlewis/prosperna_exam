@@ -11,6 +11,7 @@ import {
   logInUserDataSanitizer,
   updateUserEmailSanitizer,
   updateUserPasswordSanitizer,
+  deleteUserDataSanitizer,
 } from "../middleware/sanitization/userAuthSanitizer";
 
 import {
@@ -18,6 +19,7 @@ import {
   logInUserDataValidator,
   updateUserEmailValidator,
   updateUserPasswordValidator,
+  deleteUserDataValidator,
 } from "../middleware/validation/userAuthValidator";
 
 import {
@@ -34,6 +36,7 @@ import {
   verifyUserDataController,
   updateUserEmailController,
   updateUserPasswordController,
+  deleteUserDataController,
 } from "../controllers/userAuthController";
 
 const router = Router();
@@ -57,7 +60,13 @@ router
     loginUserDataController,
   ]);
 
-router.route("/logout").get([logOutUserDataController]);
+router
+  .route("/logout")
+  .get([
+    refreshCookieAuthentication,
+    accessCookieAuthentication,
+    logOutUserDataController,
+  ]);
 
 router
   .route("/verify")
@@ -88,6 +97,17 @@ router
     updateUserPasswordValidator,
     userCredentialsAuthenticator,
     updateUserPasswordController,
+  ]);
+
+router
+  .route("/delete")
+  .delete([
+    refreshCookieAuthentication,
+    accessCookieAuthentication,
+    deleteUserDataSanitizer,
+    deleteUserDataValidator,
+    userCredentialsAuthenticator,
+    deleteUserDataController,
   ]);
 
 export default router;
