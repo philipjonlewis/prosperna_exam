@@ -19,6 +19,10 @@ const productSchema = new Schema({
     type: String,
     required: [true, "Product description is required"],
   },
+  product_price: {
+    type: Number,
+    required: [true, "Product price is required"],
+  },
   product_tag: {
     type: [
       {

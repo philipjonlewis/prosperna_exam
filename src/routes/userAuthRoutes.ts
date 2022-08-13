@@ -1,6 +1,9 @@
 import { Router } from "express";
 import userAgent from "express-useragent";
 
+const router = Router();
+router.use(userAgent.express());
+
 import {
   refreshCookieAuthentication,
   accessCookieAuthentication,
@@ -38,9 +41,6 @@ import {
   updateUserPasswordController,
   deleteUserDataController,
 } from "../controllers/userAuthController";
-
-const router = Router();
-router.use(userAgent.express());
 
 router
   .route("/signup")

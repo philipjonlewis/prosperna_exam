@@ -25,6 +25,7 @@ import nocache from "nocache";
 require("dotenv").config();
 
 import userAuthRoutes from "./routes/userAuthRoutes";
+import productRoutes from "./routes/productRoutes";
 
 import { databaseConnection } from "./model/dbConnection";
 
@@ -111,6 +112,7 @@ app.get("/", (req: Request, res: Response) => {
 // TODO Add a rate limiter
 
 app.use("/user", userAuthRoutes);
+app.use("/products", productRoutes);
 
 app.post("/newuser", (req, res) => {
   const { username, password, passwordConfirmation } = req.body;
