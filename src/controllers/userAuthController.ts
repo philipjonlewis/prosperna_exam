@@ -39,10 +39,12 @@ const signUpUserDataController = asyncHandler(
       const refreshToken = await signedRefreshToken(_id.toString(), email);
       const accessToken = await signedAccessToken(_id.toString(), email);
 
-      await UserAuth.findByIdAndUpdate(_id, {
-        refreshToken,
-        accessToken,
-      });
+      newUser.refreshToken = refreshToken;
+      newUser.accessToken = accessToken;
+
+      newUser.userAgent = [
+        { ...newUser.userAgent[0], refreshToken, accessToken },
+      ];
 
       delete res.locals.validatedSignUpUserData;
       delete res.locals.useragent;
@@ -91,7 +93,7 @@ const loginUserDataController = asyncHandler(
           passwordConfirmation
         ));
 
-      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again");
 
       const refreshToken = await signedRefreshToken(_id.toString(), email);
       const accessToken = await signedAccessToken(_id.toString(), email);
@@ -99,9 +101,14 @@ const loginUserDataController = asyncHandler(
       await UserAuth.findByIdAndUpdate(_id, {
         refreshTokens: refreshToken,
         accessTokens: accessToken,
-        ...(useragent && {
-          userAgent: [{ ...(await userAgentCleaner(useragent)) }],
-        }),
+        userAgent: [
+          ...userAgent,
+          {
+            ...(await userAgentCleaner(useragent)),
+            refreshToken,
+            accessToken,
+          },
+        ],
       });
 
       delete res.locals.validatedLogInUserData;
@@ -129,6 +136,13 @@ const loginUserDataController = asyncHandler(
 
 const logOutUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
+    // await UserAuth.findByIdAndUpdate(
+    //   res.locals.accessTokenAuthenticatedUserId,
+    //   {
+    //     userAgent: [],
+    //   }
+    // );
+
     try {
       res
         .status(200)
@@ -230,7 +244,6 @@ const updateUserEmailController = asyncHandler(
           },
         });
     } catch (error: any) {
-
       throw new ErrorHandler(
         error.status,
         "Update User Email Controller Error",
@@ -346,7 +359,7 @@ const deleteUserDataController = asyncHandler(
       if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
 
       await UserAuth.findByIdAndDelete(_id);
-
+      // Delete all referenced products as well
       delete res.locals.validatedDeleteUserData;
 
       return res

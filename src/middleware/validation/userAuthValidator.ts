@@ -113,7 +113,7 @@ const updateUserEmailValidator = asyncHandler(
             409,
             "There seems to be something wrong with the following fields",
             error.details.map((err: any) => {
-              return err;
+              return err.message;
             })
           );
         });
@@ -146,7 +146,7 @@ const updateUserPasswordValidator = asyncHandler(
             409,
             "There seems to be something wrong with the following fields",
             error.details.map((err: any) => {
-              return err;
+              return err.message;
             })
           );
         });

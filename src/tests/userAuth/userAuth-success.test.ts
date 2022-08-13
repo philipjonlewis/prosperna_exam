@@ -1,21 +1,26 @@
 import request from "supertest";
-import app from "../app";
+import app from "../../app";
 import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
-import { databaseConnection } from "../model/dbConnection";
-import UserAuth from "../model/dbModel/userAuthDbModel";
-import { signedRefreshToken, signedAccessToken } from "../utils/cookieOptions";
+import { databaseConnection } from "../../model/dbConnection";
+import UserAuth from "../../model/dbModel/userAuthDbModel";
+import {
+  signedRefreshToken,
+  signedAccessToken,
+} from "../../utils/cookieOptions";
 
 const testUserCredentials = {
-  email: "testemail@email.com",
+  email: "userauthsuccess@email.com",
   password: "SamplePassword888!",
   passwordConfirmation: "SamplePassword888!",
-  newEmail: "changedemail@test.com",
+  newEmail: "userauthsuccessnewemail@test.com",
   newPassword: "PeoplePerson612!",
 };
 
 describe("User Auth API - Success", () => {
   beforeAll(async () => {
     await databaseConnection();
+    await UserAuth.findOneAndDelete({ email: testUserCredentials.email });
+    await UserAuth.findOneAndDelete({ email: testUserCredentials.newEmail });
   });
 
   afterEach(async () => {

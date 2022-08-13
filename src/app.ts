@@ -108,6 +108,8 @@ app.get("/", (req: Request, res: Response) => {
 // app.use("/api/auth", authRoutes);
 // app.use("/forms", viewRoutes);
 
+// TODO Add a rate limiter
+
 app.use("/user", userAuthRoutes);
 
 app.post("/newuser", (req, res) => {
