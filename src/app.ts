@@ -30,7 +30,7 @@ import { databaseConnection } from "./model/dbConnection";
 
 // import { databaseConnection } from "./model/dbConnection";
 
-// import customErrorMiddleware from "./middleware/errorHandling/customErrorMiddleware";
+import customErrorMiddleware from "./middleware/custom/customErrorMiddleware";
 
 // import authRoutes from "./routes/authRoutes";
 // import viewRoutes from "./routes/viewRoutes";
@@ -80,7 +80,7 @@ databaseConnection();
 // app.set("view engine", "ejs");
 
 app.use(function (req, res, next) {
-  // res.header("Content-Type", "application/json;charset=UTF-8");
+  res.header("Content-Type", "application/json;charset=UTF-8");
   // res.header("Access-Control-Allow-Credentials", "*");
   res.header("Access-Control-Allow-Credentials", process.env.FRONTEND_PORT);
   res.header("Access-Control-Allow-Credentials", "true");
@@ -104,10 +104,10 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/user", userAuthRoutes);
 
 app.get("*", (req, res) => {
-  res.send("Page does not ewan din");
+  res.send("Page does not exit");
 });
 
-// app.use(customErrorMiddleware);
+app.use(customErrorMiddleware);
 
 export default app;
 

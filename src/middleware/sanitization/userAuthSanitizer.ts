@@ -50,4 +50,46 @@ const logInUserDataSanitizer = asyncHandler(
   }
 ) as RequestHandler;
 
-export { signUpUserDataSanitizer, logInUserDataSanitizer };
+const updateUserEmailSanitizer = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, newEmail, password } = req.body;
+
+      res.locals.sanitizedEditUserEmail = {
+        email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
+        newEmail: sanitizeHtml(newEmail.toString().trim(), sanitizationOptions),
+        password,
+      };
+      delete req.body;
+      return next();
+    } catch (error: any) {
+      throw new ErrorHandler(500, error.message, {});
+    }
+  }
+) as RequestHandler;
+
+const updateUserPasswordSanitizer = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password, newPassword } = req.body;
+
+      res.locals.sanitizedEditUserPassword = {
+        email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
+        password,
+        newPassword,
+      };
+
+      delete req.body;
+      return next();
+    } catch (error: any) {
+      throw new ErrorHandler(500, error.message, {});
+    }
+  }
+) as RequestHandler;
+
+export {
+  signUpUserDataSanitizer,
+  logInUserDataSanitizer,
+  updateUserEmailSanitizer,
+  updateUserPasswordSanitizer,
+};

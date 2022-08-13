@@ -62,4 +62,51 @@ const logInAuthenticator = asyncHandler(
   }
 ) as RequestHandler;
 
-export { signUpAuthenticator, logInAuthenticator };
+const verifyUserAuthenticator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { accessTokenAuthenticatedUserId } = res.locals;
+
+      const isUserExisting = await UserAuth.exists({
+        _id: accessTokenAuthenticatedUserId,
+      });
+
+      if (isUserExisting) {
+        delete res.locals.accessTokenAuthenticatedUserId;
+        res.locals.isUserVerified = true;
+
+        return next();
+      }
+      throw new ErrorHandler(500, "Verify User Authentication Error", {});
+    } catch (error: any) {
+      throw new ErrorHandler(error.status, error?.message, {});
+    }
+  }
+) as RequestHandler;
+
+const userCredentialsAuthenticator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { accessTokenAuthenticatedUserId } = res.locals;
+
+      const doesUserExist = await UserAuth.exists({
+        _id: accessTokenAuthenticatedUserId.toString(),
+      });
+
+      if (doesUserExist) {
+        return next();
+      } else {
+        throw new ErrorHandler(500, "User Credentials Authenticator", {});
+      }
+    } catch (error: any) {
+      throw new ErrorHandler(500, error.message, {});
+    }
+  }
+) as RequestHandler;
+
+export {
+  signUpAuthenticator,
+  logInAuthenticator,
+  verifyUserAuthenticator,
+  userCredentialsAuthenticator,
+};

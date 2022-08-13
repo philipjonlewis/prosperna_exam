@@ -9,7 +9,8 @@ import express, {
 import {
   signUpUserDataValidationSchema,
   LogInUserDataValidationSchema,
-  EditUserDataValidationSchema,
+  EditUserEmailValidationSchema,
+  EditUserPasswordValidationSchema,
   DeleteUserDataValidationSchema,
 } from "./authValidationSchema";
 
@@ -83,34 +84,63 @@ const logInUserDataValidator = asyncHandler(
   }
 ) as RequestHandler;
 
-//   const updateUserDataValidator = asyncHandler(
-//     async (req: Request, res: Response, next: NextFunction) => {
-//       try {
-//         const { sanitizedEditUserData } = res.locals;
+const updateUserEmailValidator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { sanitizedEditUserEmail } = res.locals;
 
-//         await EditUserDataValidationSchema.validateAsync(
-//           sanitizedEditUserData,
-//           validationOptions
-//         )
-//           .then(({ value, warning, debug }: any) => {
-//             res.locals.validatedEditUserData = { ...value };
-//             delete res.locals.sanitizedEditUserData;
-//             return next();
-//           })
-//           .catch((error: any) => {
-//             throw new ErrorHandler(
-//               409,
-//               "There seems to be something wrong with the following fields",
-//               error.details.map((err: any) => {
-//                 return err;
-//               })
-//             );
-//           });
-//       } catch (error: any) {
-//         throw new ErrorHandler(error?.status, error?.message, error?.payload);
-//       }
-//     }
-//   ) as RequestHandler;
+      await EditUserEmailValidationSchema.validateAsync(
+        sanitizedEditUserEmail,
+        validationOptions
+      )
+        .then(({ value, warning, debug }: any) => {
+          res.locals.validatedEditUserEmail = { ...value };
+          delete res.locals.sanitizedEditUserEmail;
+          return next();
+        })
+        .catch((error: any) => {
+          throw new ErrorHandler(
+            409,
+            "There seems to be something wrong with the following fields",
+            error.details.map((err: any) => {
+              return err;
+            })
+          );
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+    }
+  }
+) as RequestHandler;
+
+const updateUserPasswordValidator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { sanitizedEditUserPassword } = res.locals;
+
+      await EditUserPasswordValidationSchema.validateAsync(
+        sanitizedEditUserPassword,
+        validationOptions
+      )
+        .then(({ value, warning, debug }: any) => {
+          res.locals.validatedEditUserPassword = { ...value };
+          delete res.locals.sanitizedEditUserEmail;
+          return next();
+        })
+        .catch((error: any) => {
+          throw new ErrorHandler(
+            409,
+            "There seems to be something wrong with the following fields",
+            error.details.map((err: any) => {
+              return err;
+            })
+          );
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+    }
+  }
+) as RequestHandler;
 
 //   const deleteUserDataValidator = asyncHandler(
 //     async (req: Request, res: Response, next: NextFunction) => {
@@ -144,6 +174,7 @@ const logInUserDataValidator = asyncHandler(
 export {
   signUpUserDataValidator,
   logInUserDataValidator,
-  // updateUserDataValidator,
+  updateUserEmailValidator,
+  updateUserPasswordValidator,
   // deleteUserDataValidator,
 };

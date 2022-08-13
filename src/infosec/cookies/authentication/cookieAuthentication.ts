@@ -14,6 +14,10 @@ const refreshCookieAuthentication = asyncHandler(
     try {
       const refreshCookie = await req.signedCookies["authentication-refresh"];
 
+      console.log(
+        jwt.verify(refreshCookie, process.env.AUTH_TOKEN_KEY as string)
+      );
+
       const jwtVerificationResults = jwt.verify(
         refreshCookie,
         process.env.AUTH_TOKEN_KEY as string
@@ -24,13 +28,12 @@ const refreshCookieAuthentication = asyncHandler(
           jwtVerificationResults.token;
         return next();
       }
-
-      throw new ErrorHandler(500, "wrong credentials log in again", {});
     } catch (error: any) {
       throw new ErrorHandler(
-        error.status,
+        error?.status,
         "Refresh cookie auth error",
-        error.payload
+        // error?.message || "Refresh cookie auth error",
+        error.payload || {}
       );
     }
   }
@@ -86,7 +89,7 @@ const accessCookieAuthentication = asyncHandler(
         }
       ) as any;
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error.mesage, error.payload);
+      throw new ErrorHandler(error?.status, error?.mesage, error?.payload);
     }
   }
 ) as RequestHandler;

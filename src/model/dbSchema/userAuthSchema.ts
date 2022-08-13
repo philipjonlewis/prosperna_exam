@@ -80,8 +80,12 @@ userAuthSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
       return next();
     }
-
+    console.log("this should be running");
     this.password = await bcrypt.hash(this.password, 10);
+    this.passwordConfirmation = await bcrypt.hash(
+      this.passwordConfirmation,
+      10
+    );
 
     return next();
   } catch (error) {

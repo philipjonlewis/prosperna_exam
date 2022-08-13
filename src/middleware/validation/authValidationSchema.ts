@@ -46,22 +46,32 @@ const LogInUserDataValidationSchema = Joi.object({
   password: passwordValidSchema,
 });
 
-const EditUserDataValidationSchema = Joi.object({
+const EditUserEmailValidationSchema = Joi.object({
   email: Joi.string()
     .lowercase()
     .trim()
     .min(3)
     .max(256)
     .email({ minDomainSegments: 2, tlds: { allow: false } }),
-  username: Joi.string().alphanum().lowercase().trim().min(6).max(32),
-  newPassword: Joi.string()
+  newEmail: Joi.string()
+    .lowercase()
     .trim()
-    .min(6)
-    .max(32)
-    .pattern(
-      new RegExp("(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,32}$")
-    ),
+    .min(3)
+    .max(256)
+    .email({ minDomainSegments: 2, tlds: { allow: false } }),
+
   password: passwordValidSchema,
+});
+const EditUserPasswordValidationSchema = Joi.object({
+  email: Joi.string()
+    .lowercase()
+    .trim()
+    .min(3)
+    .max(256)
+    .email({ minDomainSegments: 2, tlds: { allow: false } }),
+
+  password: passwordValidSchema,
+  newPassword: passwordValidSchema,
 });
 
 const DeleteUserDataValidationSchema = Joi.object({
@@ -72,6 +82,7 @@ const DeleteUserDataValidationSchema = Joi.object({
 export {
   signUpUserDataValidationSchema,
   LogInUserDataValidationSchema,
-  EditUserDataValidationSchema,
+  EditUserEmailValidationSchema,
+  EditUserPasswordValidationSchema,
   DeleteUserDataValidationSchema,
 };
