@@ -24,6 +24,10 @@ import nocache from "nocache";
 
 require("dotenv").config();
 
+import userAuthRoutes from "./routes/userAuthRoutes";
+
+import { databaseConnection } from "./model/dbConnection";
+
 // import { databaseConnection } from "./model/dbConnection";
 
 // import customErrorMiddleware from "./middleware/errorHandling/customErrorMiddleware";
@@ -66,7 +70,7 @@ app.use(
   })
 );
 
-// databaseConnection();
+databaseConnection();
 // projectDbSeeder();
 // phaseDbSeeder();
 // taskDbSeeder();
@@ -97,6 +101,8 @@ app.get("/", (req: Request, res: Response) => {
 // app.use("/api/auth", authRoutes);
 // app.use("/forms", viewRoutes);
 
+app.use("/user", userAuthRoutes);
+
 app.get("*", (req, res) => {
   res.send("Page does not ewan din");
 });
@@ -104,8 +110,6 @@ app.get("*", (req, res) => {
 // app.use(customErrorMiddleware);
 
 export default app;
-
-
 
 // Authentication - check is user from cookies exist
 

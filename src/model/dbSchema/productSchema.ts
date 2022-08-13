@@ -6,6 +6,11 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const productSchema = new Schema({
+  product_owner: {
+    type: Schema.Types.ObjectId,
+    ref: "userAuthSchema",
+    required: [true, "All products must have an owner"],
+  },
   product_name: {
     type: String,
     required: [true, "Product name is required"],
