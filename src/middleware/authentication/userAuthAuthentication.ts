@@ -40,4 +40,26 @@ const signUpAuthenticator = asyncHandler(
   }
 ) as RequestHandler;
 
-export { signUpAuthenticator };
+const logInAuthenticator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { validatedLogInUserData } = res.locals;
+
+      // console.log(validatedLogInUserData);
+
+      const isUserExisting = await UserAuth.exists({
+        email: validatedLogInUserData?.email,
+      });
+
+      if (isUserExisting) {
+        return next();
+      }
+
+      throw new ErrorHandler(500, "LogIn Authentication Error", {});
+    } catch (error: any) {
+      throw new ErrorHandler(error.status, error?.message, {});
+    }
+  }
+) as RequestHandler;
+
+export { signUpAuthenticator, logInAuthenticator };

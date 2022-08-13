@@ -63,4 +63,49 @@ const signUpUserDataController = asyncHandler(
   }
 ) as RequestHandler;
 
-export { signUpUserDataController };
+const loginUserDataController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { validatedLogInUserData }: any = res.locals;
+
+    const existingUser = await UserAuth.find({
+      email: validatedLogInUserData.email,
+    })
+      .select("+email +password -__v")
+      .limit(1);
+
+    const { _id, email, password } = existingUser[0];
+
+    const isUserValid = await bcrypt.compare(
+      validatedLogInUserData.password,
+      password
+    );
+
+    if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+
+    const refreshToken = await signedRefreshToken(_id.toString(), email);
+    const accessToken = await signedAccessToken(_id.toString(), email);
+
+    await UserAuth.findByIdAndUpdate(_id, {
+      refreshTokens: refreshToken,
+      accessTokens: accessToken,
+    });
+
+    delete res.locals.validatedLogInUserData;
+
+    return res
+      .status(200)
+      .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
+      .cookie("authentication-access", accessToken, accessCookieOptions)
+      .json({
+        code: 200,
+        status: true,
+        message: "Successfully logged in",
+        payload: {
+          _id,
+          email,
+        },
+      });
+  }
+) as RequestHandler;
+
+export { signUpUserDataController, loginUserDataController };

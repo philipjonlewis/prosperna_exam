@@ -1,24 +1,28 @@
 import { Router } from "express";
 import userAgent from "express-useragent";
 
-import { signUpUserDataSanitizer } from "../middleware/sanitization/userAuthSanitizer";
-import { signUpUserDataValidator } from "../middleware/validation/userAuthValidator";
-import { signUpAuthenticator } from "../middleware/authentication/userAuthAuthentication";
-import { signUpUserDataController } from "../controllers/userAuthController";
+import {
+  signUpUserDataSanitizer,
+  logInUserDataSanitizer,
+} from "../middleware/sanitization/userAuthSanitizer";
+
+import {
+  signUpUserDataValidator,
+  logInUserDataValidator,
+} from "../middleware/validation/userAuthValidator";
+
+import {
+  signUpAuthenticator,
+  logInAuthenticator,
+} from "../middleware/authentication/userAuthAuthentication";
+
+import {
+  signUpUserDataController,
+  loginUserDataController,
+} from "../controllers/userAuthController";
 
 const router = Router();
 router.use(userAgent.express());
-
-//SignUp
-//LogIn
-//Change Email
-//Change Password
-//Delete User
-
-//Sanitize
-//Validate
-//Authenticate
-//Controller
 
 router
   .route("/signup")
@@ -27,6 +31,15 @@ router
     signUpUserDataValidator,
     signUpAuthenticator,
     signUpUserDataController,
+  ]);
+
+router
+  .route("/login")
+  .post([
+    logInUserDataSanitizer,
+    logInUserDataValidator,
+    logInAuthenticator,
+    loginUserDataController,
   ]);
 
 export default router;

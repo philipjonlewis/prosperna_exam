@@ -54,38 +54,34 @@ const signUpUserDataValidator = asyncHandler(
   }
 ) as RequestHandler;
 
-//   const logInUserDataValidator = asyncHandler(
-//     async (
-//       req: Request,
-//       res: TypedResponseBody<ValidatedLogInDataType>,
-//       next: NextFunction
-//     ) => {
-//       try {
-//         const { sanitizedLogInUserData } = res.locals;
+const logInUserDataValidator = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { sanitizedLogInUserData } = res.locals;
 
-//         await LogInUserDataValidationSchema.validateAsync(
-//           sanitizedLogInUserData,
-//           validationOptions
-//         )
-//           .then(({ value, warning, debug }: any) => {
-//             res.locals.validatedLogInUserData = { ...value };
-//             delete res.locals.sanitizedLogInUserData;
-//             return next();
-//           })
-//           .catch((error: any) => {
-//             throw new ErrorHandler(
-//               409,
-//               "There seems to be something wrong with the following fields",
-//               error.details.map((err: any) => {
-//                 return err;
-//               })
-//             );
-//           });
-//       } catch (error: any) {
-//         throw new ErrorHandler(error?.status, error?.message, error?.payload);
-//       }
-//     }
-//   ) as RequestHandler;
+      await LogInUserDataValidationSchema.validateAsync(
+        sanitizedLogInUserData,
+        validationOptions
+      )
+        .then(({ value, warning, debug }: any) => {
+          res.locals.validatedLogInUserData = { ...value };
+          delete res.locals.sanitizedLogInUserData;
+          return next();
+        })
+        .catch((error: any) => {
+          throw new ErrorHandler(
+            409,
+            "There seems to be something wrong with the following fields",
+            error.details.map((err: any) => {
+              return err;
+            })
+          );
+        });
+    } catch (error: any) {
+      throw new ErrorHandler(error?.status, error?.message, error?.payload);
+    }
+  }
+) as RequestHandler;
 
 //   const updateUserDataValidator = asyncHandler(
 //     async (req: Request, res: Response, next: NextFunction) => {
@@ -147,7 +143,7 @@ const signUpUserDataValidator = asyncHandler(
 
 export {
   signUpUserDataValidator,
-  // logInUserDataValidator,
+  logInUserDataValidator,
   // updateUserDataValidator,
   // deleteUserDataValidator,
 };

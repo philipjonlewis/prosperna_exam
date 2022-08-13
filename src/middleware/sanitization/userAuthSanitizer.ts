@@ -16,14 +16,10 @@ const signUpUserDataSanitizer = asyncHandler(
     try {
       const { email, password, passwordConfirmation } = req.body;
 
-      const sanitizedSignUpUserData = {
+      res.locals.sanitizedSignUpUserData = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
         password,
         passwordConfirmation,
-      };
-
-      res.locals.sanitizedSignUpUserData = {
-        ...sanitizedSignUpUserData,
       };
 
       delete req.body;
@@ -35,4 +31,23 @@ const signUpUserDataSanitizer = asyncHandler(
   }
 ) as RequestHandler;
 
-export { signUpUserDataSanitizer };
+const logInUserDataSanitizer = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { email, password } = req.body;
+
+      res.locals.sanitizedLogInUserData = {
+        email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
+        password,
+      };
+
+      delete req.body;
+
+      return next();
+    } catch (error: any) {
+      throw new ErrorHandler(500, error.message, {});
+    }
+  }
+) as RequestHandler;
+
+export { signUpUserDataSanitizer, logInUserDataSanitizer };
