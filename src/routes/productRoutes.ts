@@ -7,43 +7,64 @@ import {
 } from "../infosec/cookies/authentication/cookieAuthentication";
 
 import ProductModel from "../model/dbModel/productsDbModel";
+import {
+  signUpAuthenticator,
+  logInAuthenticator,
+  verifyUserAuthenticator,
+  userCredentialsAuthenticator,
+} from "../middleware/authentication/userAuthAuthentication";
 
-router.use([refreshCookieAuthentication, accessCookieAuthentication]);
+import {
+  addProductDataSanitizer,
+  editProductDataSanitizer,
+  deleteProductDataSanitizer,
+} from "../middleware/sanitization/productDataSanitizer";
 
-router.route("/").get((req, res) => {
-  const { accessTokenAuthenticatedUserId } = res.locals;
+import {
+  addProductDataValidator,
+  editProductDataValidator,
+  deleteProductDataValidator,
+} from "../middleware/validation/productDataValidator";
 
-  // Get all products with
+import {
+  addProductDataAuthorization,
+  editProductDataAuthorization,
+  deleteProductDataAuthorization,
+} from "../middleware/authorization/productAuthorization";
 
-  const newProduct = new ProductModel({
-    product_owner: accessTokenAuthenticatedUserId,
-    product_name: "Food",
-    product_description: "A good food",
-    product_price: 300,
-    product_tag: ["food", "recipe"],
-  });
+import {
+  addProductDataController,
+  getProductDataController,
+  editProductDataController,
+  deleteProductDataController,
+} from "../controllers/productController";
 
-  newProduct.save();
+router.use([
+  refreshCookieAuthentication,
+  accessCookieAuthentication,
+  userCredentialsAuthenticator,
+]);
 
-  res.send(newProduct);
-});
-
-router.route("/one/:productId").get(async (req, res) => {
-  const { accessTokenAuthenticatedUserId } = res.locals;
-
-  console.log(req.params);
-
-  const foundProduct = await ProductModel.findOne({
-    product_owner: accessTokenAuthenticatedUserId,
-  });
-
-  res.send(foundProduct);
-});
-
-// Create Product
-
-// Update Product
-
-// Delete Product
+router
+  .route("/")
+  .get([getProductDataController])
+  .post([
+    addProductDataSanitizer,
+    addProductDataValidator,
+    addProductDataAuthorization,
+    addProductDataController,
+  ])
+  .patch([
+    editProductDataSanitizer,
+    editProductDataValidator,
+    editProductDataAuthorization,
+    editProductDataController,
+  ])
+  .delete([
+    deleteProductDataSanitizer,
+    deleteProductDataValidator,
+    deleteProductDataAuthorization,
+    deleteProductDataController,
+  ]);
 
 export default router;

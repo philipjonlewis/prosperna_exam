@@ -6,7 +6,7 @@ import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
 
 import UserAuth from "../model/dbModel/userAuthDbModel";
-
+import ProductModel from "../model/dbModel/productsDbModel";
 import { userAgentCleaner } from "../utils/userAgentCleaner";
 
 import bcrypt from "bcryptjs";
@@ -358,6 +358,7 @@ const deleteUserDataController = asyncHandler(
 
       if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
 
+      await ProductModel.deleteMany({ product_owner: _id });
       await UserAuth.findByIdAndDelete(_id);
       // Delete all referenced products as well
       delete res.locals.validatedDeleteUserData;
