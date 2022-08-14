@@ -83,7 +83,7 @@ const editProductDataValidator = asyncHandler(
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Validation Error", {
+      throw new ErrorHandler(422, "Edit Product Validation Error", {
         possibleError: error.message,
         errorLocation: scriptName,
         ...(error.payload && { errorContent: error.payload }),
@@ -114,7 +114,7 @@ const deleteProductDataValidator = asyncHandler(
           );
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Validation Error", {
+      throw new ErrorHandler(422, "Delete Product Validation Error", {
         possibleError: error.message,
         errorLocation: scriptName,
         ...(error.payload && { errorContent: error.payload }),

@@ -30,9 +30,7 @@ const addProductDataAuthorization = asyncHandler(
         product_owner: accessTokenAuthenticatedUserId,
         ...validatedAddProductData,
       };
-
       delete res.locals.validatedAddProductData;
-
       return next();
     } catch (error: any) {
       throw new ErrorHandler(422, "Add Product Authorization Error", {
@@ -65,14 +63,17 @@ const editProductDataAuthorization = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(422, "Unauthorized access!!");
-
+      throw new ErrorHandler(401, "User is unauthorized to edit product");
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Authorization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(
+        error.status,
+        "Edit Product Authorization Error",
+        {
+          possibleError: error.message,
+          errorLocation: scriptName,
+          ...(error.payload && { errorContent: error.payload }),
+        }
+      );
     }
   }
 ) as RequestHandler;
@@ -98,15 +99,17 @@ const deleteProductDataAuthorization = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(422, "Unauthorized access!!");
-
-   
+      throw new ErrorHandler(401, "User is unauthorized to delete product");
     } catch (error: any) {
-      throw new ErrorHandler(422, "Delete Product Authorization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(
+        error.status,
+        "Delete Product Authorization Error",
+        {
+          possibleError: error.message,
+          errorLocation: scriptName,
+          ...(error.payload && { errorContent: error.payload }),
+        }
+      );
     }
   }
 ) as RequestHandler;

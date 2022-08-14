@@ -28,7 +28,7 @@ describe("User Auth API - Success", () => {
     await UserAuth.findOneAndDelete({ email: testUserCredentials.newEmail });
   });
 
-  test("Sign Up - Success", async () => {
+  test("Sign Up", async () => {
     const res = await request(app)
       .post("/user/signup")
       .send({
@@ -52,7 +52,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Log In - Success", async () => {
+  test("Log In", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -93,7 +93,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Log Out - Success", async () => {
+  test("Log Out", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -132,7 +132,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Verify User - Success", async () => {
+  test("Verify User", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -171,7 +171,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Edit Email - Success", async () => {
+  test("Edit Email", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -220,7 +220,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Edit Password - Success", async () => {
+  test("Edit Password", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -268,7 +268,7 @@ describe("User Auth API - Success", () => {
     );
   });
 
-  test("Delete User - Success", async () => {
+  test("Delete User", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,

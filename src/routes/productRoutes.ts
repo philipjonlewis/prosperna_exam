@@ -6,13 +6,7 @@ import {
   accessCookieAuthentication,
 } from "../infosec/cookies/authentication/cookieAuthentication";
 
-import ProductModel from "../model/dbModel/productsDbModel";
-import {
-  signUpAuthenticator,
-  logInAuthenticator,
-  verifyUserAuthenticator,
-  userCredentialsAuthenticator,
-} from "../middleware/authentication/userAuthAuthentication";
+import { userCredentialsAuthenticator } from "../middleware/authentication/userAuthAuthentication";
 
 import {
   addProductDataSanitizer,

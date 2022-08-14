@@ -97,7 +97,7 @@ const editProductDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Data Sanitization Error", {
+      throw new ErrorHandler(422, "Edit Product Data Sanitization Error", {
         possibleError: error.message,
         errorLocation: scriptName,
       });
@@ -122,7 +122,7 @@ const deleteProductDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Data Sanitization Error", {
+      throw new ErrorHandler(422, "Delete Product Data Sanitization Error", {
         possibleError: error.message,
         errorLocation: scriptName,
       });

@@ -5,20 +5,6 @@ import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
 
-import UserAuth from "../model/dbModel/userAuthDbModel";
-
-import { userAgentCleaner } from "../utils/userAgentCleaner";
-
-import bcrypt from "bcryptjs";
-
-import {
-  signedRefreshToken,
-  signedAccessToken,
-  refreshCookieOptions,
-  accessCookieOptions,
-  clearAuthCookieOptions,
-} from "../utils/cookieOptions";
-
 import ProductModel from "../model/dbModel/productsDbModel";
 
 const addProductDataController = asyncHandler(
@@ -28,9 +14,19 @@ const addProductDataController = asyncHandler(
 
       const newProduct = new ProductModel(authorizedAddProductData);
       newProduct.save();
-      return res.json(newProduct);
+
+      return res.status(201).json({
+        success: true,
+        message: "Successfully added a product",
+        payload: {
+          _id: newProduct._id,
+          product_name: newProduct.product_name,
+          product_description: newProduct.product_description,
+          product_price: newProduct.product_price,
+        },
+      });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "User Log Out Controller Error", {
+      throw new ErrorHandler(error.status, "Add product data error", {
         possibleError: error.message,
         errorLocation: scriptName,
       });
@@ -44,14 +40,19 @@ const getProductDataController = asyncHandler(
       const { productId } = req.query;
       const { accessTokenAuthenticatedUserId } = res.locals;
 
-      const foundProduct = await ProductModel.find({
+      const products = await ProductModel.find({
         ...(productId && { _id: productId }),
         product_owner: accessTokenAuthenticatedUserId,
-      });
+      }).select("-__v -product_owner +_id +product_tag");
 
-      res.send(foundProduct);
+      return res.status(201).json({
+        success: true,
+        message: "Successfully reading products",
+        productCount: products.length,
+        payload: products,
+      });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "User Log Out Controller Error", {
+      throw new ErrorHandler(error.status, "Get product data error", {
         possibleError: error.message,
         errorLocation: scriptName,
       });
@@ -72,22 +73,18 @@ const editProductDataController = asyncHandler(
         },
         { ...authorizedEditProductData },
         { new: true }
-      );
+      ).select("-__v +product_tag");
 
-      return res.json(editedProductData);
-
-      // const newProduct = new ProductModel(authorizedEditProductData);
-      // newProduct.save();
-      // return res.json(newProduct);
+      return res.status(200).json({
+        success: true,
+        message: "Successfully edited product",
+        payload: editedProductData,
+      });
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Edit Product Data Controller Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-        }
-      );
+      throw new ErrorHandler(error.status, "Edit product data error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
@@ -115,20 +112,20 @@ const deleteProductDataController = asyncHandler(
         });
       }
 
-      return res.json(deletedProductData);
+      return res.status(200).json({
+        success: true,
+        message: "Successfully deleted a product",
+        payload: deletedProductData,
+      });
 
       // const newProduct = new ProductModel(authorizedEditProductData);
       // newProduct.save();
       // return res.json(newProduct);
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Delete Product Data Controller Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-        }
-      );
+      throw new ErrorHandler(error.status, "Delete product data error", {
+        possibleError: error.message,
+        errorLocation: scriptName,
+      });
     }
   }
 ) as RequestHandler;
