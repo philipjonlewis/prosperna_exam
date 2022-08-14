@@ -13,6 +13,11 @@ const testUserCredentials = {
   password: "SamplePassword",
   passwordConfirmation: "SamplePassword888!",
 };
+import {
+  userAuthValidationError,
+  userAuthenticationError,
+  userControllerError,
+} from "../../helpers/userAuthErrorResponse";
 
 describe("User Auth API - Failure - Log In", () => {
   beforeAll(async () => {
@@ -29,7 +34,7 @@ describe("User Auth API - Failure - Log In", () => {
     });
   });
 
-  test("Log In - Failure - Email Format", async () => {
+  test("Invalid Email Format", async () => {
     const res = await request(app)
       .post("/user/login")
       .send({
@@ -38,24 +43,12 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Log In Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("email"),
-          ]),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
 
-  test("Log In - Failure - Password Format", async () => {
+  test("Invalid Password Format", async () => {
     const res = await request(app)
       .post("/user/login")
       .send({
@@ -64,25 +57,12 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Log In Validation Error",
-        payload: expect.objectContaining({
-          possibleError:
-            "There seems to be something wrong with the following fields",
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("password"),
-          ]),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
 
-  test("Log In - Failure - Invalid Password", async () => {
+  test("Invalid Password", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email + "@email.com",
       password: testUserCredentials.password + "888!",
@@ -109,21 +89,12 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(401);
+      .expect(userControllerError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Log In Controller Error",
-        payload: expect.objectContaining({
-          possibleError: "Try Logging in again",
-          errorLocation: expect.any(String),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userControllerError));
   });
 
-  test("Log In - Failure - Non-Existing User", async () => {
+  test("Non Existent User", async () => {
     const res = await request(app)
       .post("/user/login")
       .send({
@@ -132,17 +103,8 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(401);
+      .expect(userAuthenticationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Log In Authentication Error",
-        payload: expect.objectContaining({
-          possibleError: "User Log In Authentication Error",
-          errorLocation: expect.any(String),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthenticationError));
   });
 });

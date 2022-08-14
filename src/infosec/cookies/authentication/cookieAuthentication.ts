@@ -8,6 +8,8 @@ import { Request, Response, RequestHandler, NextFunction } from "express";
 
 import asyncHandler from "../../../handlers/asyncHandler";
 import ErrorHandler from "../../../middleware/custom/modifiedErrorHandler";
+import { cookieAuthenticationError } from "../../../helpers/cookieErrorResponse";
+
 import UserAuth from "../../../model/dbModel/userAuthDbModel";
 
 const refreshCookieAuthentication = asyncHandler(
@@ -25,10 +27,7 @@ const refreshCookieAuthentication = asyncHandler(
         return next();
       }
     } catch (error: any) {
-      throw new ErrorHandler(400, "Refresh Cookie Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(cookieAuthenticationError);
     }
   }
 ) as RequestHandler;
@@ -69,7 +68,7 @@ const accessCookieAuthentication = asyncHandler(
 
               return next();
             } else {
-              throw new ErrorHandler(400, "Access Cookie Error");
+              throw new Error();
             }
           }
 
@@ -79,14 +78,11 @@ const accessCookieAuthentication = asyncHandler(
             return next();
           }
 
-          throw new ErrorHandler(400, "Access Cookie Error");
+          throw new Error();
         }
       ) as any;
     } catch (error: any) {
-      throw new ErrorHandler(400, "Access Cookie Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(cookieAuthenticationError);
     }
   }
 ) as RequestHandler;

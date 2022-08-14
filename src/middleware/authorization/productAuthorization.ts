@@ -16,6 +16,8 @@ import asyncHandler from "../../handlers/asyncHandler";
 
 import ErrorHandler from "../custom/modifiedErrorHandler";
 
+import { productAuthorizationError } from "../../helpers/productErrorResponse";
+
 const addProductDataAuthorization = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -33,11 +35,7 @@ const addProductDataAuthorization = asyncHandler(
       delete res.locals.validatedAddProductData;
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Authorization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(productAuthorizationError);
     }
   }
 ) as RequestHandler;
@@ -63,17 +61,9 @@ const editProductDataAuthorization = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(401, "User is unauthorized to edit product");
+      throw new Error();
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Edit Product Authorization Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-          ...(error.payload && { errorContent: error.payload }),
-        }
-      );
+      throw new ErrorHandler(productAuthorizationError);
     }
   }
 ) as RequestHandler;
@@ -99,17 +89,9 @@ const deleteProductDataAuthorization = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(401, "User is unauthorized to delete product");
+      throw new Error();
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Delete Product Authorization Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-          ...(error.payload && { errorContent: error.payload }),
-        }
-      );
+      throw new ErrorHandler(productAuthorizationError);
     }
   }
 ) as RequestHandler;

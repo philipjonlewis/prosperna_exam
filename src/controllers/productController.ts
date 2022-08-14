@@ -4,6 +4,7 @@ const scriptName = path.basename(__filename);
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
+import { productControllerError } from "../helpers/productErrorResponse";
 
 import ProductModel from "../model/dbModel/productsDbModel";
 
@@ -26,10 +27,7 @@ const addProductDataController = asyncHandler(
         },
       });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "Add product data error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productControllerError);
     }
   }
 ) as RequestHandler;
@@ -52,10 +50,7 @@ const getProductDataController = asyncHandler(
         payload: products,
       });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "Get product data error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productControllerError);
     }
   }
 ) as RequestHandler;
@@ -81,10 +76,7 @@ const editProductDataController = asyncHandler(
         payload: editedProductData,
       });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "Edit product data error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productControllerError);
     }
   }
 ) as RequestHandler;
@@ -122,10 +114,7 @@ const deleteProductDataController = asyncHandler(
       // newProduct.save();
       // return res.json(newProduct);
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "Delete product data error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productControllerError);
     }
   }
 ) as RequestHandler;

@@ -7,6 +7,8 @@ import sanitizeHtml from "sanitize-html";
 import asyncHandler from "../../handlers/asyncHandler";
 import ErrorHandler from "../custom/modifiedErrorHandler";
 
+import { productSanitizationError } from "../../helpers/productErrorResponse";
+
 const sanitizationOptions = {
   allowedTags: [],
   parser: {
@@ -42,10 +44,7 @@ const addProductDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Data Sanitization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productSanitizationError);
     }
   }
 ) as RequestHandler;
@@ -97,10 +96,7 @@ const editProductDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Edit Product Data Sanitization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productSanitizationError);
     }
   }
 ) as RequestHandler;
@@ -122,10 +118,7 @@ const deleteProductDataSanitizer = asyncHandler(
 
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(422, "Delete Product Data Sanitization Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(productSanitizationError);
     }
   }
 ) as RequestHandler;

@@ -8,6 +8,11 @@ import {
   signedAccessToken,
 } from "../../utils/cookieOptions";
 
+import {
+  userAuthValidationError,
+  userAuthenticationError,
+} from "../../helpers/userAuthErrorResponse";
+
 const testUserCredentials = {
   email: "userauthfailuresignup",
   password: "SamplePassword",
@@ -25,7 +30,7 @@ describe("User Auth API - Failure - Sign Up", () => {
     });
   });
 
-  test("Sign Up - Failure - Email Format", async () => {
+  test("Invalid Email Format", async () => {
     const res = await request(app)
       .post("/user/signup")
       .send({
@@ -35,24 +40,12 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Sign Up Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("email"),
-          ]),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
 
-  test("Sign Up - Failure - Existing User", async () => {
+  test("Existing User", async () => {
     const newUser = new UserAuth({
       email: "existinguser@email.com",
       password: "ExistingUser888!",
@@ -80,25 +73,16 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(401);
+      .expect(userAuthenticationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Signup Authentication Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthenticationError));
 
     await UserAuth.findOneAndDelete({
       email: "existinguser@email.com",
     });
   });
 
-  test("Sign Up - Failure - Password Format", async () => {
+  test("Invalid Password Format", async () => {
     const res = await request(app)
       .post("/user/signup")
       .send({
@@ -108,24 +92,12 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Sign Up Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("password"),
-          ]),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
 
-  test("Sign Up - Failure - Password Confirmation Similarity & Format", async () => {
+  test("Password Confirmation Similarity & Format", async () => {
     const res = await request(app)
       .post("/user/signup")
       .send({
@@ -135,20 +107,8 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
-    expect(res.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Sign Up Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("passwordConfirmation"),
-          ]),
-        }),
-      })
-    );
+    expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
 });

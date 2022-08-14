@@ -7,6 +7,8 @@ import asyncHandler from "../../handlers/asyncHandler";
 import ErrorHandler from "../custom/modifiedErrorHandler";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 
+import { userAuthenticationError } from "../../helpers/userAuthErrorResponse";
+
 const signUpAuthenticator = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -15,14 +17,10 @@ const signUpAuthenticator = asyncHandler(
           email: res.locals.validatedSignUpUserData.email,
         })
       )
-        throw new ErrorHandler(401, "User Signup Authentication Error");
-
+        throw new Error();
       return next();
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error.message, {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userAuthenticationError);
     }
     //if email and password exists do not process
   }
@@ -39,12 +37,9 @@ const logInAuthenticator = asyncHandler(
         return next();
       }
 
-      throw new ErrorHandler(401, "User Log In Authentication Error", {});
+      throw new Error();
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error.message, {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userAuthenticationError);
     }
   }
 ) as RequestHandler;
@@ -60,12 +55,9 @@ const verifyUserAuthenticator = asyncHandler(
         res.locals.isUserVerified = true;
         return next();
       }
-      throw new ErrorHandler(401, "User Verification Authentication Error", {});
+      throw new Error();
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error.message, {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userAuthenticationError);
     }
   }
 ) as RequestHandler;
@@ -79,12 +71,9 @@ const userCredentialsAuthenticator = asyncHandler(
         })
       )
         return next();
-      throw new ErrorHandler(401, "User Credentials Authentication Error", {});
+      throw new Error();
     } catch (error: any) {
-      throw new ErrorHandler(error.status, error.message, {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userAuthenticationError);
     }
   }
 ) as RequestHandler;

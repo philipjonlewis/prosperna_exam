@@ -15,6 +15,11 @@ const testUserCredentials = {
   passwordConfirmation: "SamplePassword888!",
 };
 
+import {
+  userAuthValidationError,
+  userAuthenticationError,
+} from "../../helpers/userAuthErrorResponse";
+
 describe("User Auth API - Failure - Edit", () => {
   beforeAll(async () => {
     await databaseConnection();
@@ -30,7 +35,7 @@ describe("User Auth API - Failure - Edit", () => {
     });
   });
 
-  test("Edit Email - Failure - New Email Format", async () => {
+  test("Invalid New Email Format", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -64,24 +69,14 @@ describe("User Auth API - Failure - Edit", () => {
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
     expect(editEmail.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Update Email Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("newEmail"),
-          ]),
-        }),
-      })
+      expect.objectContaining(userAuthValidationError)
     );
   });
 
-  test("Edit Password - Failure - New Password Format", async () => {
+  test("Invalid New Password Format", async () => {
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -115,20 +110,10 @@ describe("User Auth API - Failure - Edit", () => {
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(422);
+      .expect(userAuthValidationError.statusCode);
 
     expect(editEmail.body).toEqual(
-      expect.objectContaining({
-        success: false,
-        message: "User Update Password Validation Error",
-        payload: expect.objectContaining({
-          possibleError: expect.any(String),
-          errorLocation: expect.any(String),
-          errorContent: expect.arrayContaining([
-            expect.stringContaining("newPassword"),
-          ]),
-        }),
-      })
+      expect.objectContaining(userAuthValidationError)
     );
   });
 });

@@ -13,6 +13,8 @@ import asyncHandler from "../../handlers/asyncHandler";
 
 import ErrorHandler from "../custom/modifiedErrorHandler";
 
+import { productValidationError } from "../../helpers/productErrorResponse";
+
 import {
   addProductDataValidationSchema,
   editProductDataValidationSchema,
@@ -42,20 +44,10 @@ const addProductDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "Add Product Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(productValidationError);
     }
   }
 ) as RequestHandler;
@@ -74,20 +66,10 @@ const editProductDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "Edit Product Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(productValidationError);
     }
   }
 ) as RequestHandler;
@@ -105,20 +87,10 @@ const deleteProductDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "Delete Product Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(productValidationError);
     }
   }
 ) as RequestHandler;

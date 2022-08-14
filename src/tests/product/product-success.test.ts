@@ -61,7 +61,7 @@ describe("Product API - Success", () => {
     await ProductModel.deleteMany({ product_owner: userId });
   });
 
-  test("Add Product", async () => {
+  test("Create Product", async () => {
     const loginRes = await request(app).post("/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -89,7 +89,7 @@ describe("Product API - Success", () => {
     );
   });
 
-  test("Get Product", async () => {
+  test("Read Product", async () => {
     const loginRes = await request(app).post("/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -128,7 +128,7 @@ describe("Product API - Success", () => {
     );
   });
 
-  test("Edit Product", async () => {
+  test("Update Product", async () => {
     const loginRes = await request(app).post("/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,

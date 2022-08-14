@@ -15,16 +15,15 @@ const customErrorMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { status, message, payload } = error;
+  const { statusCode, message } = error;
   return (
     res
       // .clearCookie("authentication-refresh", { path: "/" })
       // .clearCookie("authentication-access", { path: "/" })
-      .status(status)
+      .status(statusCode)
       .json({
-        success: false,
+        statusCode,
         message,
-        payload,
       })
   );
 };

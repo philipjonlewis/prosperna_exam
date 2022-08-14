@@ -9,6 +9,8 @@ import UserAuth from "../model/dbModel/userAuthDbModel";
 import ProductModel from "../model/dbModel/productsDbModel";
 import { userAgentCleaner } from "../utils/userAgentCleaner";
 
+import { userControllerError } from "../helpers/userAuthErrorResponse";
+
 import bcrypt from "bcryptjs";
 
 import {
@@ -64,10 +66,7 @@ const signUpUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "User Sign Up Controller Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
@@ -93,7 +92,7 @@ const loginUserDataController = asyncHandler(
           passwordConfirmation
         ));
 
-      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again");
+      if (!isUserValid) throw new Error();
 
       const refreshToken = await signedRefreshToken(_id.toString(), email);
       const accessToken = await signedAccessToken(_id.toString(), email);
@@ -126,23 +125,13 @@ const loginUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "User Log In Controller Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
 
 const logOutUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
-    // await UserAuth.findByIdAndUpdate(
-    //   res.locals.accessTokenAuthenticatedUserId,
-    //   {
-    //     userAgent: [],
-    //   }
-    // );
-
     try {
       res
         .status(200)
@@ -153,10 +142,7 @@ const logOutUserDataController = asyncHandler(
         message: "Logged Out",
       });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "User Log Out Controller Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
@@ -166,22 +152,14 @@ const verifyUserDataController = asyncHandler(
     try {
       const { isUserVerified }: any = res.locals;
 
-      if (!isUserVerified)
-        throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserVerified) throw new Error();
 
       return res.status(200).json({
         success: true,
         message: "User is still logged in",
       });
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "User Verification Controller Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-        }
-      );
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
@@ -211,7 +189,7 @@ const updateUserEmailController = asyncHandler(
           passwordConfirmation
         ));
 
-      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new Error();
 
       const refreshToken = await signedRefreshToken(
         _id.toString(),
@@ -244,14 +222,7 @@ const updateUserEmailController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Update User Email Controller Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-        }
-      );
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
@@ -281,7 +252,7 @@ const updateUserPasswordController = asyncHandler(
           passwordConfirmation
         ));
 
-      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new Error();
 
       const refreshToken = await signedRefreshToken(
         _id.toString(),
@@ -324,14 +295,7 @@ const updateUserPasswordController = asyncHandler(
           },
         });
     } catch (error: any) {
-      throw new ErrorHandler(
-        error.status,
-        "Update User Password Controller Error",
-        {
-          possibleError: error.message,
-          errorLocation: scriptName,
-        }
-      );
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;
@@ -356,7 +320,7 @@ const deleteUserDataController = asyncHandler(
           passwordConfirmation
         ));
 
-      if (!isUserValid) throw new ErrorHandler(401, "Try Logging in again", {});
+      if (!isUserValid) throw new Error();
 
       await ProductModel.deleteMany({ product_owner: _id });
       await UserAuth.findByIdAndDelete(_id);
@@ -372,10 +336,7 @@ const deleteUserDataController = asyncHandler(
           message: "Deleted User",
         });
     } catch (error: any) {
-      throw new ErrorHandler(error.status, "Delete User Controller Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-      });
+      throw new ErrorHandler(userControllerError);
     }
   }
 ) as RequestHandler;

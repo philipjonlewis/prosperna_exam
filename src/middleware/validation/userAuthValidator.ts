@@ -21,6 +21,8 @@ import asyncHandler from "../../handlers/asyncHandler";
 
 import ErrorHandler from "../custom/modifiedErrorHandler";
 
+import { userAuthValidationError } from "../../helpers/userAuthErrorResponse";
+
 const validationOptions = {
   abortEarly: false,
   cache: false,
@@ -43,20 +45,10 @@ const signUpUserDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "User Sign Up Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(userAuthValidationError);
     }
   }
 ) as RequestHandler;
@@ -76,20 +68,10 @@ const logInUserDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "User Log In Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(userAuthValidationError);
     }
   }
 ) as RequestHandler;
@@ -109,20 +91,10 @@ const updateUserEmailValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "User Update Email Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(userAuthValidationError);
     }
   }
 ) as RequestHandler;
@@ -142,20 +114,10 @@ const updateUserPasswordValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err.message;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "User Update Password Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(userAuthValidationError);
     }
   }
 ) as RequestHandler;
@@ -175,52 +137,13 @@ const deleteUserDataValidator = asyncHandler(
           return next();
         })
         .catch((error: any) => {
-          throw new ErrorHandler(
-            409,
-            "There seems to be something wrong with the following fields",
-            error.details.map((err: any) => {
-              return err;
-            })
-          );
+          throw new Error();
         });
     } catch (error: any) {
-      throw new ErrorHandler(422, "User Deletion Validation Error", {
-        possibleError: error.message,
-        errorLocation: scriptName,
-        ...(error.payload && { errorContent: error.payload }),
-      });
+      throw new ErrorHandler(userAuthValidationError);
     }
   }
 ) as RequestHandler;
-
-//   const deleteUserDataValidator = asyncHandler(
-//     async (req: Request, res: Response, next: NextFunction) => {
-//       try {
-//         const { sanitizedDeleteUserData } = res.locals;
-
-//         await DeleteUserDataValidationSchema.validateAsync(
-//           sanitizedDeleteUserData,
-//           validationOptions
-//         )
-//           .then(({ value, warning, debug }: any) => {
-//             res.locals.validatedDeleteUserData = { ...value };
-//             delete res.locals.sanitizedDeleteUserData;
-//             return next();
-//           })
-//           .catch((error: any) => {
-//             throw new ErrorHandler(
-//               409,
-//               "There seems to be something wrong with the following fields",
-//               error.details.map((err: any) => {
-//                 return err;
-//               })
-//             );
-//           });
-//       } catch (error: any) {
-//         throw new ErrorHandler(error?.status, error?.message, error?.payload);
-//       }
-//     }
-//   ) as RequestHandler;
 
 export {
   signUpUserDataValidator,
