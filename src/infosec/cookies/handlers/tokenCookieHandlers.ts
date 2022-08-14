@@ -1,17 +1,7 @@
-import fs from "fs";
-import path from "path";
 
 import jwt from "jsonwebtoken";
 
-// const  process.env.AUTH_TOKEN_KEY as string  = fs.readFileSync(
-//   path.resolve(
-//     __dirname,
-//     "../../keys/refreshTokenKeys/refreshTokenPrivate.key"
-//   ),
-//   "utf8"
-// );
-
-import { AuthModel } from "../../../middleware/authorization/dbModel";
+import UserAuth from "../../../model/dbModel/userAuthDbModel";
 
 const refreshTokenHandler = async (user: any) => {
   const refreshToken = await jwt.sign(
@@ -27,7 +17,7 @@ const refreshTokenHandler = async (user: any) => {
       algorithm: "HS256",
     }
   );
-  await AuthModel.findByIdAndUpdate(await user._id, {
+  await UserAuth.findByIdAndUpdate(await user._id, {
     refreshTokens: [refreshToken],
   });
 

@@ -1,6 +1,14 @@
 import request from "supertest";
 import app from "../../app";
-import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
+import {
+  describe,
+  expect,
+  test,
+  beforeAll,
+  afterAll,
+  afterEach,
+  beforeEach,
+} from "vitest";
 import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import ProductModel from "../../model/dbModel/productsDbModel";
@@ -54,6 +62,10 @@ describe("Product API - Success", () => {
 
   afterAll(async () => {
     await UserAuth.findOneAndDelete({ email: testUserCredentials.email });
+    await ProductModel.deleteMany({ product_owner: userId });
+  });
+
+  beforeEach(async () => {
     await ProductModel.deleteMany({ product_owner: userId });
   });
 

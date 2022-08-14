@@ -4,9 +4,6 @@ const app: Express = express();
 var boolParser = require("express-query-boolean");
 import cookieParser from "cookie-parser";
 
-import csrf from "csurf";
-const csrfProtection = csrf({ cookie: true });
-
 import helmet from "helmet";
 import cors from "cors";
 import nocache from "nocache";
@@ -45,9 +42,6 @@ app.use(
 
 databaseConnection();
 
-// app.use(csrfProtection);
-// app.set("view engine", "ejs");
-
 app.use(function (req, res, next) {
   res.header("Content-Type", "application/json;charset=UTF-8");
   // res.header("Access-Control-Allow-Credentials", "*");
@@ -71,8 +65,8 @@ app.use(
 
 app.use(morgan("dev"));
 
-app.use("/user", userAuthRoutes);
-app.use("/products", productRoutes);
+app.use("/api_v1/user", userAuthRoutes);
+app.use("/api_v1/products", productRoutes);
 
 app.get("*", (req, res) => {
   res.send("Page does not exit");
