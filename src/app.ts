@@ -2,64 +2,36 @@ import express, { Express, Request, Response, RequestHandler } from "express";
 const app: Express = express();
 
 var boolParser = require("express-query-boolean");
-
-import userAgent from "express-useragent";
-
-import { lookup } from "geoip-lite";
-
-import getClientIp from "@supercharge/request-ip";
-
 import cookieParser from "cookie-parser";
 
 import csrf from "csurf";
 const csrfProtection = csrf({ cookie: true });
 
 import helmet from "helmet";
-
 import cors from "cors";
-
-import path from "path";
-
 import nocache from "nocache";
-
 require("dotenv").config();
 
 import userAuthRoutes from "./routes/userAuthRoutes";
 import productRoutes from "./routes/productRoutes";
 
 import { databaseConnection } from "./model/dbConnection";
-
-// import { databaseConnection } from "./model/dbConnection";
-
 import customErrorMiddleware from "./middleware/custom/customErrorMiddleware";
 
-// import authRoutes from "./routes/authRoutes";
-// import viewRoutes from "./routes/viewRoutes";
-// import { projectDbSeeder, phaseDbSeeder, taskDbSeeder } from "./model/dbSeeder";
-
-// no need to set the code below if the views folder is already named views
-// app.set("views", path.join(__dirname, "/views"));
-// app.use(express.static(__dirname + "/public"));
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
 app.disable("x-powered-by");
-
 app.set("trust proxy", true);
 
-// url encoded is needed with form data
 app.use(express.urlencoded({ extended: true }));
-// express.json is needed when parsing json data i.e. rest
 app.use(express.json());
-
 app.use(cookieParser(process.env.WALKERS_SHORTBREAD));
-
 app.use(boolParser());
-
 app.use(helmet());
-
 app.use(nocache());
 
 app.set("etag", false);
-
 app.set("trust proxy", 1);
 
 app.use(
@@ -72,12 +44,8 @@ app.use(
 );
 
 databaseConnection();
-// projectDbSeeder();
-// phaseDbSeeder();
-// taskDbSeeder();
 
 // app.use(csrfProtection);
-
 // app.set("view engine", "ejs");
 
 app.use(function (req, res, next) {
@@ -92,33 +60,19 @@ app.use(function (req, res, next) {
   next();
 });
 
-// We should add a rate limiter
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  })
+);
 
-// app.use("/", (req, res) => {
-//   delete res.locals.validatedSignUpUserData;
-//   console.log(res.locals);
-// });
-
-app.get("/", (req: Request, res: Response) => {
-  // console.log("does not crazy");
-  res.json({ status: "success" });
-  //   res.render("pages", { name: "wilderi" });
-  // res.send("authentication server server");
-});
-
-// app.use("/api/auth", authRoutes);
-// app.use("/forms", viewRoutes);
-
-// TODO Add a rate limiter
+app.use(morgan("dev"));
 
 app.use("/user", userAuthRoutes);
 app.use("/products", productRoutes);
-
-app.post("/newuser", (req, res) => {
-  const { username, password, passwordConfirmation } = req.body;
-
-  return res.json({ message: "napakagaling" });
-});
 
 app.get("*", (req, res) => {
   res.send("Page does not exit");
@@ -127,7 +81,3 @@ app.get("*", (req, res) => {
 app.use(customErrorMiddleware);
 
 export default app;
-
-// Authentication - check is user from cookies exist
-
-// Authorization - Check if user is free ser or premium.
