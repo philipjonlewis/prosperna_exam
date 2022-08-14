@@ -89,7 +89,7 @@ describe("Product API - Delete - Failure", () => {
       password: testUserCredentials.password,
     });
 
-    const addedProject = await request(app)
+    await request(app)
       .post("/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)

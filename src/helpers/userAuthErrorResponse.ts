@@ -1,19 +1,30 @@
-export const userAuthSanitizationError = {
-  statusCode: 422,
-  message: "User Sanitization Error",
-};
+import { devEnvironment } from "./standardErrorResponse";
+import { standardProductionErrorResponse } from "./standardErrorResponse";
 
-export const userAuthValidationError = {
-  statusCode: 409,
-  message: "User Validation Error",
-};
+export const userAuthSanitizationError = devEnvironment
+  ? {
+      statusCode: 422,
+      message: "User Sanitization Error",
+    }
+  : standardProductionErrorResponse;
 
-export const userAuthenticationError = {
-  statusCode: 401,
-  message: "User Authentication Error",
-};
+export const userAuthValidationError = devEnvironment
+  ? {
+      statusCode: 409,
+      message: "User Validation Error",
+    }
+  : standardProductionErrorResponse;
 
-export const userControllerError = {
-  statusCode: 500,
-  message: "Something is wrong with our server",
-};
+export const userAuthenticationError = devEnvironment
+  ? {
+      statusCode: 401,
+      message: "User Authentication Error",
+    }
+  : standardProductionErrorResponse;
+
+export const userControllerError = devEnvironment
+  ? {
+      statusCode: 500,
+      message: "Something is wrong with our server",
+    }
+  : standardProductionErrorResponse;
