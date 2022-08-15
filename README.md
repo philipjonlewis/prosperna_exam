@@ -2,23 +2,33 @@
 
 # Prosperna Coding Exam
 
-## By Philip Lewis
+### By Philip Jon E Lewis
 
-Position Applied : Backend Developer (NodeJS)
+philipjonlewis@gmail.com
+
+**Position Applied : Backend Developer (NodeJS)**
+
+---
+
+### Authentication and Product server
+
+[API Documentation](https://www.example.com)
+Made via Postman
 
 ---
 
-### Authentication and product server
+## Tech Stack
 
----
+### Language
+
+- Typescript
 
 #### Backend
 
-- Typescript
 - NodeJS
 - ExpressJS
 
-#### Databse
+#### Database
 
 - MongoDB
 - Mongoose
@@ -35,7 +45,7 @@ Position Applied : Backend Developer (NodeJS)
 
 ---
 
-### Instructions
+## Instructions
 
 1. Download or clone the repo
 2. Go inside the folder
@@ -58,9 +68,23 @@ Position Applied : Backend Developer (NodeJS)
     AUTH_TOKEN_KEY=*Add JWT cookie auth token secret*
    ```
 
-6. Run the code to test
-   > `npm run test`
+6. Run this code to run in development mode
 
-7. Run the code to test with vitest ui
+   > `npm run dev`
+
+7. Run this code to build
+
+   > `npm run build`
+
+8. Run this code to test with vitest ui
+
    > `npm run testwatch`
 
+9. Run this code to test
+
+   > `npm run test`
+
+10. Run this code to test with vitest ui
+    > `npm run testwatch`
+
+---

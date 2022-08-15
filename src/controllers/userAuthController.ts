@@ -24,8 +24,11 @@ import {
 const signUpUserDataController = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const { validatedSignUpUserData, useragent } = res.locals;
-      const { email, password, passwordConfirmation } = validatedSignUpUserData;
+      const {
+        validatedSignUpUserData: { email, password, passwordConfirmation },
+        useragent,
+      } = res.locals;
+      // const { email, password, passwordConfirmation } = validatedSignUpUserData;
 
       const newUser = new UserAuth({
         email,

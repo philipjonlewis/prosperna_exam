@@ -40,7 +40,7 @@ const addProductDataSanitizer = asyncHandler(
         }),
       };
 
-      delete req.body;
+
 
       return next();
     } catch (error: any) {
@@ -92,7 +92,7 @@ const editProductDataSanitizer = asyncHandler(
         }),
       };
 
-      delete req.body;
+     
 
       return next();
     } catch (error: any) {
@@ -114,7 +114,7 @@ const deleteProductDataSanitizer = asyncHandler(
         ),
       };
 
-      delete req.body;
+    
 
       return next();
     } catch (error: any) {

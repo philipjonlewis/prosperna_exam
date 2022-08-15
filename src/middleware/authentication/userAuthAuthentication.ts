@@ -9,8 +9,11 @@ import UserAuth from "../../model/dbModel/userAuthDbModel";
 
 import { userAuthenticationError } from "../../helpers/userAuthErrorResponse";
 
+import type { TypedValidatedResponseBody } from "../../types/userAuthTypes";
+import type { TypedAccessTokenAuthenticatedResponseBody } from "../../types/cookieAuthTypes";
+
 const signUpAuthenticator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: TypedValidatedResponseBody, next: NextFunction) => {
     try {
       if (
         await UserAuth.exists({
@@ -27,7 +30,7 @@ const signUpAuthenticator = asyncHandler(
 ) as RequestHandler;
 
 const logInAuthenticator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: TypedValidatedResponseBody, next: NextFunction) => {
     try {
       if (
         await UserAuth.exists({
@@ -45,7 +48,11 @@ const logInAuthenticator = asyncHandler(
 ) as RequestHandler;
 
 const verifyUserAuthenticator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedAccessTokenAuthenticatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       if (
         await UserAuth.exists({
@@ -63,7 +70,11 @@ const verifyUserAuthenticator = asyncHandler(
 ) as RequestHandler;
 
 const userCredentialsAuthenticator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedAccessTokenAuthenticatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       if (
         await UserAuth.exists({

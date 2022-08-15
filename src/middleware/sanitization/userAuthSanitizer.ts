@@ -9,6 +9,18 @@ import ErrorHandler from "../custom/modifiedErrorHandler";
 
 import { userAuthSanitizationError } from "../../helpers/userAuthErrorResponse";
 
+import type {} from "../../types/commonTypes";
+
+import type {
+  UserSignupData,
+  UserLogInData,
+  UpdateUserEmailData,
+  UpdateUserPasswordData,
+  UserDeleteData,
+  TypedRequestBody,
+  TypedSanitizedResponseBody,
+} from "../../types/userAuthTypes";
+
 const sanitizationOptions = {
   allowedTags: [],
   parser: {
@@ -17,17 +29,20 @@ const sanitizationOptions = {
 };
 
 const signUpUserDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
-      const { email, password, passwordConfirmation } = req.body;
+      const { email, password, passwordConfirmation } =
+        req.body as UserSignupData;
 
       res.locals.sanitizedSignUpUserData = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
         password,
         passwordConfirmation,
       };
-
-      delete req.body;
 
       return next();
     } catch (error: any) {
@@ -37,16 +52,18 @@ const signUpUserDataSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const logInUserDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
-      const { email, password } = req.body;
+      const { email, password } = req.body as UserLogInData;
 
       res.locals.sanitizedLogInUserData = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
         password,
       };
-
-      delete req.body;
 
       return next();
     } catch (error: any) {
@@ -56,16 +73,20 @@ const logInUserDataSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const updateUserEmailSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
-      const { email, newEmail, password } = req.body;
+      const { email, newEmail, password } = req.body as UpdateUserEmailData;
 
       res.locals.sanitizedEditUserEmail = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
         newEmail: sanitizeHtml(newEmail.toString().trim(), sanitizationOptions),
         password,
       };
-      delete req.body;
+
       return next();
     } catch (error: any) {
       throw new ErrorHandler(userAuthSanitizationError);
@@ -74,9 +95,14 @@ const updateUserEmailSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const updateUserPasswordSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
-      const { email, password, newPassword } = req.body;
+      const { email, password, newPassword } =
+        req.body as UpdateUserPasswordData;
 
       res.locals.sanitizedEditUserPassword = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
@@ -84,7 +110,6 @@ const updateUserPasswordSanitizer = asyncHandler(
         newPassword,
       };
 
-      delete req.body;
       return next();
     } catch (error: any) {
       throw new ErrorHandler(userAuthSanitizationError);
@@ -93,17 +118,20 @@ const updateUserPasswordSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const deleteUserDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
-      const { email, password, passwordConfirmation } = req.body;
+      const { email, password, passwordConfirmation } =
+        req.body as UserDeleteData;
 
       res.locals.sanitizedDeleteUserData = {
         email: sanitizeHtml(email.toString().trim(), sanitizationOptions),
         password,
         passwordConfirmation,
       };
-
-      delete req.body;
 
       return next();
     } catch (error: any) {

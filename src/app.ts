@@ -33,8 +33,7 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    // origin: "*",
-    origin: process.env.FRONTEND_PORT,
+    origin: "*",
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -44,7 +43,6 @@ databaseConnection();
 
 app.use(function (req, res, next) {
   res.header("Content-Type", "application/json;charset=UTF-8");
-  // res.header("Access-Control-Allow-Credentials", "*");
   res.header(
     "Access-Control-Allow-Credentials",
     process.env.FRONTEND_PORT || "*"

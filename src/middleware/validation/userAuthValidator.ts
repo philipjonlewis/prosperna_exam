@@ -32,14 +32,28 @@ const validationOptions = {
   warnings: true,
 };
 
+import type {
+  UserSignupData,
+  UserLogInData,
+  UpdateUserEmailData,
+  UpdateUserPasswordData,
+  UserDeleteData,
+  TypedRequestBody,
+  TypedValidatedResponseBody,
+} from "../../types/userAuthTypes";
+
 const signUpUserDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedSignUpUserData } = res.locals;
 
       await signUpUserDataValidationSchema
         .validateAsync(sanitizedSignUpUserData, validationOptions)
-        .then(({ value, warning, debug }: any) => {
+        .then(({ value }: { value: UserSignupData }) => {
           res.locals.validatedSignUpUserData = { ...value };
           delete res.locals.sanitizedSignUpUserData;
           return next();
@@ -54,7 +68,11 @@ const signUpUserDataValidator = asyncHandler(
 ) as RequestHandler;
 
 const logInUserDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedLogInUserData } = res.locals;
 
@@ -62,7 +80,7 @@ const logInUserDataValidator = asyncHandler(
         sanitizedLogInUserData,
         validationOptions
       )
-        .then(({ value, warning, debug }: any) => {
+        .then(({ value }: { value: UserLogInData }) => {
           res.locals.validatedLogInUserData = { ...value };
           delete res.locals.sanitizedLogInUserData;
           return next();
@@ -77,7 +95,11 @@ const logInUserDataValidator = asyncHandler(
 ) as RequestHandler;
 
 const updateUserEmailValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedEditUserEmail } = res.locals;
 
@@ -85,7 +107,7 @@ const updateUserEmailValidator = asyncHandler(
         sanitizedEditUserEmail,
         validationOptions
       )
-        .then(({ value, warning, debug }: any) => {
+        .then(({ value }: { value: UpdateUserEmailData }) => {
           res.locals.validatedEditUserEmail = { ...value };
           delete res.locals.sanitizedEditUserEmail;
           return next();
@@ -100,7 +122,11 @@ const updateUserEmailValidator = asyncHandler(
 ) as RequestHandler;
 
 const updateUserPasswordValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedEditUserPassword } = res.locals;
 
@@ -108,7 +134,7 @@ const updateUserPasswordValidator = asyncHandler(
         sanitizedEditUserPassword,
         validationOptions
       )
-        .then(({ value, warning, debug }: any) => {
+        .then(({ value }: { value: UpdateUserPasswordData }) => {
           res.locals.validatedEditUserPassword = { ...value };
           delete res.locals.sanitizedEditUserEmail;
           return next();
@@ -123,7 +149,11 @@ const updateUserPasswordValidator = asyncHandler(
 ) as RequestHandler;
 
 const deleteUserDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedRequestBody,
+    res: TypedValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedDeleteUserData } = res.locals;
 
@@ -131,7 +161,7 @@ const deleteUserDataValidator = asyncHandler(
         sanitizedDeleteUserData,
         validationOptions
       )
-        .then(({ value, warning, debug }: any) => {
+        .then(({ value }: { value: UserDeleteData }) => {
           res.locals.validatedDeleteUserData = { ...value };
           delete res.locals.sanitizedLogInUserData;
           return next();
