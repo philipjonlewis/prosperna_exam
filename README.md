@@ -78,7 +78,7 @@ Made via Postman
 
 8. Run this code for unit testing
 
-> `npm run test`
+   > `npm run test`
 
 9. Run this code to test with vitest ui
 

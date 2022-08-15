@@ -29,16 +29,16 @@ const signUpUserDataController = asyncHandler(
       } = res.locals;
       // const { email, password, passwordConfirmation } = validatedSignUpUserData;
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const hashedPasswordConfirmation = await bcrypt.hash(
-        passwordConfirmation,
-        10
-      );
+      // const hashedPassword = await bcrypt.hash(password, 10);
+      // const hashedPasswordConfirmation = await bcrypt.hash(
+      //   passwordConfirmation,
+      //   10
+      // );
 
       const newUser = new UserAuth({
         email,
-        password: hashedPassword,
-        passwordConfirmation: hashedPasswordConfirmation,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
         ...(useragent && {
           userAgent: [{ ...(await userAgentCleaner(useragent)) }],
         }),

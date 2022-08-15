@@ -38,7 +38,7 @@ const testmail = {
   deleteuser: "testsuccessdeleteuser@email.com",
 };
 
-describe.concurrent("User Auth API - Success", () => {
+describe("User Auth API - Success", () => {
   test("Sign Up", async () => {
     const res = await request(app)
       .post("/api_v1/user/signup")
@@ -66,16 +66,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Log In", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.login,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
@@ -113,16 +107,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Log Out", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.logout,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
@@ -158,16 +146,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Verify User", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.verify,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
@@ -203,16 +185,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Edit Email", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.editemail,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
@@ -259,16 +235,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Edit Password", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.editpassword,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
@@ -313,16 +283,10 @@ describe.concurrent("User Auth API - Success", () => {
   });
 
   test("Delete User", async () => {
-    const hashedPassword = await bcrypt.hash(testUserCredentials.password, 10);
-    const hashedPasswordConfirmation = await bcrypt.hash(
-      testUserCredentials.passwordConfirmation,
-      10
-    );
-
     const newUser = new UserAuth({
       email: testmail.deleteuser,
-      password: hashedPassword,
-      passwordConfirmation: hashedPasswordConfirmation,
+      password: testUserCredentials.password,
+      passwordConfirmation: testUserCredentials.passwordConfirmation,
     });
 
     const { _id, email } = newUser;
