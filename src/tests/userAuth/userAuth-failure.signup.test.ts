@@ -32,7 +32,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Invalid Email Format", async () => {
     const res = await request(app)
-      .post("/user/signup")
+      .post("/api_v1/user/signup")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password + "888!",
@@ -65,7 +65,7 @@ describe("User Auth API - Failure - Sign Up", () => {
     await newUser.save();
 
     const res = await request(app)
-      .post("/user/signup")
+      .post("/api_v1/user/signup")
       .send({
         email: "existinguser@email.com",
         password: "ExistingUser888!",
@@ -84,7 +84,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Invalid Password Format", async () => {
     const res = await request(app)
-      .post("/user/signup")
+      .post("/api_v1/user/signup")
       .send({
         email: testUserCredentials.email + "@email.com",
         password: testUserCredentials.password,
@@ -99,7 +99,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Password Confirmation Similarity & Format", async () => {
     const res = await request(app)
-      .post("/user/signup")
+      .post("/api_v1/user/signup")
       .send({
         email: testUserCredentials.email + "@email.com",
         password: testUserCredentials.password + "888!",

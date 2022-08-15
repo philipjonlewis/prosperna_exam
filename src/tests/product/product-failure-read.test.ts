@@ -71,7 +71,7 @@ describe("Product API - Read - Failure", () => {
 
   test("Read Product - Not Logged In", async () => {
     const getProduct = await request(app)
-      .get("/products")
+      .get("/api_v1/products")
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(cookieAuthenticationError.statusCode);
@@ -82,13 +82,13 @@ describe("Product API - Read - Failure", () => {
   });
 
   test("Read Product - Non-Existent Product Id", async () => {
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     await request(app)
-      .post("/products")
+      .post("/api_v1/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
@@ -96,7 +96,7 @@ describe("Product API - Read - Failure", () => {
       .expect(201);
 
     const getProduct = await request(app)
-      .get("/products?productId=62f86e1971c9d2cfd98bccd8")
+      .get("/api_v1/products?productId=62f86e1971c9d2cfd98bccd8")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)

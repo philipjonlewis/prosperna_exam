@@ -30,7 +30,7 @@ describe("User Auth API - Success", () => {
 
   test("Sign Up", async () => {
     const res = await request(app)
-      .post("/user/signup")
+      .post("/api_v1/user/signup")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,
@@ -72,7 +72,7 @@ describe("User Auth API - Success", () => {
     await newUser.save();
 
     const res = await request(app)
-      .post("/user/login")
+      .post("/api_v1/user/login")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,
@@ -112,13 +112,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const logoutRes = await request(app)
-      .get("/user/logout")
+      .get("/api_v1/user/logout")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -151,13 +151,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const verifyUser = await request(app)
-      .get("/user/verify")
+      .get("/api_v1/user/verify")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -190,13 +190,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/user/update/email")
+      .patch("/api_v1/user/update/email")
       .send({
         email: testUserCredentials.email,
         newEmail: testUserCredentials.newEmail,
@@ -239,13 +239,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editPassword = await request(app)
-      .patch("/user/update/password")
+      .patch("/api_v1/user/update/password")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,
@@ -287,13 +287,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const deleteUser = await request(app)
-      .delete("/user/delete")
+      .delete("/api_v1/user/delete")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,

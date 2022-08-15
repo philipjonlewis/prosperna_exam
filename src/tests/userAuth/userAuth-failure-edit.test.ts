@@ -54,13 +54,13 @@ describe("User Auth API - Failure - Edit", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/user/update/email")
+      .patch("/api_v1/user/update/email")
       .send({
         email: testUserCredentials.email,
         newEmail: "newuserauthfailureeditemail.com",
@@ -95,13 +95,13 @@ describe("User Auth API - Failure - Edit", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/user/update/password")
+      .patch("/api_v1/user/update/password")
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,

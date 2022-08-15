@@ -70,7 +70,7 @@ describe("Product API - Create - Failure", () => {
 
   test("Create Product - Not Logged In", async () => {
     const addProduct = await request(app)
-      .post("/products")
+      .post("/api_v1/products")
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -82,13 +82,13 @@ describe("Product API - Create - Failure", () => {
   });
 
   test("Create Product - Incomplete Data", async () => {
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const addProduct = await request(app)
-      .post("/products")
+      .post("/api_v1/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(incompleteTestProductData)
       .set("Accept", "application/json")

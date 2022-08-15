@@ -72,7 +72,7 @@ describe("Product API - Delete - Failure", () => {
 
   test("Delete Product - Not Logged In", async () => {
     const deleteProduct = await request(app)
-      .delete("/products")
+      .delete("/api_v1/products")
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -84,13 +84,13 @@ describe("Product API - Delete - Failure", () => {
   });
 
   test("Delete Product - Incomplete Data", async () => {
-    const loginRes = await request(app).post("/user/login").send({
+    const loginRes = await request(app).post("/api_v1/user/login").send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     await request(app)
-      .post("/products")
+      .post("/api_v1/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
@@ -98,7 +98,7 @@ describe("Product API - Delete - Failure", () => {
       .expect(201);
 
     const deleteProduct = await request(app)
-      .delete("/products")
+      .delete("/api_v1/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send({
         product_owner: userId,
