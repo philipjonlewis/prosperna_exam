@@ -1,4 +1,10 @@
-import express, { Express, Request, Response, RequestHandler } from "express";
+import express, {
+  Express,
+  Request,
+  Response,
+  RequestHandler,
+  NextFunction,
+} from "express";
 const app: Express = express();
 
 var boolParser = require("express-query-boolean");
@@ -22,7 +28,6 @@ app.disable("x-powered-by");
 
 app.set("trust proxy", true);
 app.set("etag", false);
-app.set("trust proxy", 1);
 
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +36,7 @@ app.use(cookieParser(process.env.WALKERS_SHORTBREAD));
 app.use(boolParser());
 app.use(helmet());
 app.use(nocache());
+
 app.use(
   cors({
     origin: "*",
@@ -38,6 +44,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -46,7 +53,8 @@ app.use(
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   })
 );
-app.use(function (req, res, next) {
+
+app.use(function (req: Request, res: Response, next: NextFunction) {
   res.header("Content-Type", "application/json;charset=UTF-8");
   res.header(
     "Access-Control-Allow-Credentials",
@@ -64,8 +72,8 @@ databaseConnection();
 
 app.use("/api_v1/user", userAuthRoutes);
 app.use("/api_v1/products", productRoutes);
-app.get("*", (req, res) => {
-  // Should send a more formatted thing
+app.get("*", (req: Request, res: Response) => {
+  // Should send a more formatted response
   res.send("Page does not exit");
 });
 
