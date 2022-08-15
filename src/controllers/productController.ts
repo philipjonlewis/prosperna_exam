@@ -1,5 +1,6 @@
 import path from "path";
 const scriptName = path.basename(__filename);
+import { devEnvironment } from "../helpers/standardErrorResponse";
 
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
@@ -28,6 +29,7 @@ const addProductDataController = asyncHandler(
         },
       });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
   }
@@ -51,6 +53,7 @@ const getProductDataController = asyncHandler(
         payload: products,
       });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
   }
@@ -77,6 +80,7 @@ const editProductDataController = asyncHandler(
         payload: editedProductData,
       });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
   }
@@ -111,6 +115,7 @@ const deleteProductDataController = asyncHandler(
         payload: deletedProductData,
       });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
   }

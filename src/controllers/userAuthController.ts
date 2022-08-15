@@ -1,5 +1,6 @@
 import path from "path";
 const scriptName = path.basename(__filename);
+import { devEnvironment } from "../helpers/standardErrorResponse";
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
@@ -66,7 +67,7 @@ const signUpUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
-      console.log(error);
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -124,7 +125,7 @@ const loginUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
-      console.log(error);
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -159,6 +160,7 @@ const verifyUserDataController = asyncHandler(
         message: "User is still logged in",
       });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -220,6 +222,7 @@ const updateUserEmailController = asyncHandler(
           },
         });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -294,6 +297,7 @@ const updateUserPasswordController = asyncHandler(
           },
         });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -335,6 +339,7 @@ const deleteUserDataController = asyncHandler(
           message: "Deleted User",
         });
     } catch (error: any) {
+      devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
