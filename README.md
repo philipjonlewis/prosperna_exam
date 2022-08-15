@@ -10,7 +10,7 @@ philipjonlewis@gmail.com
 
 ---
 
-### Authentication and Product server
+### CRUD REST API Authentication and Product server
 
 [API Documentation](https://www.example.com)
 Made via Postman

@@ -20,20 +20,15 @@ import {
   clearAuthCookieOptions,
 } from "../utils/cookieOptions";
 
+import type { TypedUserAuthControllerResponseBody } from "../types/userAuthTypes";
+
 const signUpUserDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
       const {
         validatedSignUpUserData: { email, password, passwordConfirmation },
         useragent,
       } = res.locals;
-      // const { email, password, passwordConfirmation } = validatedSignUpUserData;
-
-      // const hashedPassword = await bcrypt.hash(password, 10);
-      // const hashedPasswordConfirmation = await bcrypt.hash(
-      //   passwordConfirmation,
-      //   10
-      // );
 
       const newUser = new UserAuth({
         email,
@@ -55,9 +50,6 @@ const signUpUserDataController = asyncHandler(
       newUser.userAgent = [
         { ...newUser.userAgent[0], refreshToken, accessToken },
       ];
-
-      delete res.locals.validatedSignUpUserData;
-      delete res.locals.useragent;
 
       await newUser.save();
 
@@ -81,7 +73,7 @@ const signUpUserDataController = asyncHandler(
 ) as RequestHandler;
 
 const loginUserDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
       const { validatedLogInUserData, useragent }: any = res.locals;
 
@@ -119,8 +111,6 @@ const loginUserDataController = asyncHandler(
         ],
       });
 
-      delete res.locals.validatedLogInUserData;
-
       return res
         .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
@@ -141,7 +131,7 @@ const loginUserDataController = asyncHandler(
 ) as RequestHandler;
 
 const logOutUserDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
       res
         .status(200)
@@ -158,7 +148,7 @@ const logOutUserDataController = asyncHandler(
 ) as RequestHandler;
 
 const verifyUserDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
       const { isUserVerified }: any = res.locals;
 
@@ -175,11 +165,13 @@ const verifyUserDataController = asyncHandler(
 ) as RequestHandler;
 
 const updateUserEmailController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
-      const { validatedEditUserEmail } = await res.locals;
+      const { validatedEditUserEmail, accessTokenAuthenticatedUserId } =
+        await res.locals;
 
       const existingUser = await UserAuth.find({
+        _id: accessTokenAuthenticatedUserId,
         email: validatedEditUserEmail.email,
       })
         .select("+email +password +passwordConfirmation -__v")
@@ -205,16 +197,14 @@ const updateUserEmailController = asyncHandler(
         validatedEditUserEmail.newEmail
       );
 
-      await UserAuth.updateOne(
-        { _id: _id },
+      await UserAuth.findByIdAndUpdate(
+        { _id: accessTokenAuthenticatedUserId },
         {
           email: validatedEditUserEmail.newEmail,
           refreshTokens: refreshToken,
           accessTokens: accessToken,
         }
       );
-
-      delete res.locals.validatedEditUserEmail;
 
       return res
         .status(200)
@@ -236,7 +226,7 @@ const updateUserEmailController = asyncHandler(
 ) as RequestHandler;
 
 const updateUserPasswordController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
       const { validatedEditUserPassword, accessTokenAuthenticatedUserId } =
         await res.locals;
@@ -291,8 +281,6 @@ const updateUserPasswordController = asyncHandler(
         }
       );
 
-      delete res.locals.validatedEditUserEmail;
-
       return res
         .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
@@ -312,17 +300,19 @@ const updateUserPasswordController = asyncHandler(
 ) as RequestHandler;
 
 const deleteUserDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedUserAuthControllerResponseBody) => {
     try {
-      const { validatedDeleteUserData }: any = res.locals;
+      const { validatedDeleteUserData, accessTokenAuthenticatedUserId }: any =
+        res.locals;
 
       const existingUser = await UserAuth.find({
+        _id: accessTokenAuthenticatedUserId,
         email: validatedDeleteUserData.email,
       })
-        .select("+email +password +passwordConfirmation -__v")
+        .select("-email +password +passwordConfirmation -__v")
         .limit(1);
 
-      const { _id, email, password, passwordConfirmation } = existingUser[0];
+      const { _id, password, passwordConfirmation } = existingUser[0];
 
       const isUserValid =
         (await bcrypt.compare(validatedDeleteUserData.password, password)) &&
@@ -335,8 +325,6 @@ const deleteUserDataController = asyncHandler(
 
       await ProductModel.deleteMany({ product_owner: _id });
       await UserAuth.findByIdAndDelete(_id);
-      // Delete all referenced products as well
-      delete res.locals.validatedDeleteUserData;
 
       return res
         .status(200)

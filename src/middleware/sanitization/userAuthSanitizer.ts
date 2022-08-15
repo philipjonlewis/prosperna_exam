@@ -17,8 +17,8 @@ import type {
   UpdateUserEmailData,
   UpdateUserPasswordData,
   UserDeleteData,
-  TypedRequestBody,
-  TypedSanitizedResponseBody,
+  TypedUserAuthRequestBody,
+  TypedUserAuthSanitizedResponseBody,
 } from "../../types/userAuthTypes";
 
 const sanitizationOptions = {
@@ -30,8 +30,8 @@ const sanitizationOptions = {
 
 const signUpUserDataSanitizer = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedSanitizedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthSanitizedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -53,8 +53,8 @@ const signUpUserDataSanitizer = asyncHandler(
 
 const logInUserDataSanitizer = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedSanitizedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthSanitizedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -74,8 +74,8 @@ const logInUserDataSanitizer = asyncHandler(
 
 const updateUserEmailSanitizer = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedSanitizedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthSanitizedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -96,8 +96,8 @@ const updateUserEmailSanitizer = asyncHandler(
 
 const updateUserPasswordSanitizer = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedSanitizedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthSanitizedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -119,8 +119,8 @@ const updateUserPasswordSanitizer = asyncHandler(
 
 const deleteUserDataSanitizer = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedSanitizedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthSanitizedResponseBody,
     next: NextFunction
   ) => {
     try {

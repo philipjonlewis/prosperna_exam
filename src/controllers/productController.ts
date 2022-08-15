@@ -7,9 +7,10 @@ import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
 import { productControllerError } from "../helpers/productErrorResponse";
 
 import ProductModel from "../model/dbModel/productsDbModel";
+import type { TypedProductControllerResponseBody } from "../types/productTypes";
 
 const addProductDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedProductControllerResponseBody) => {
     try {
       const { authorizedAddProductData } = res.locals;
 
@@ -33,7 +34,7 @@ const addProductDataController = asyncHandler(
 ) as RequestHandler;
 
 const getProductDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedProductControllerResponseBody) => {
     try {
       const { productId } = req.query;
       const { accessTokenAuthenticatedUserId } = res.locals;
@@ -56,7 +57,7 @@ const getProductDataController = asyncHandler(
 ) as RequestHandler;
 
 const editProductDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedProductControllerResponseBody) => {
     try {
       const { authorizedEditProductData, accessTokenAuthenticatedUserId } =
         res.locals;
@@ -82,7 +83,7 @@ const editProductDataController = asyncHandler(
 ) as RequestHandler;
 
 const deleteProductDataController = asyncHandler(
-  async (req: Request, res: Response) => {
+  async (req: Request, res: TypedProductControllerResponseBody) => {
     try {
       const { deleteAllProducts } = req.query;
 
@@ -109,10 +110,6 @@ const deleteProductDataController = asyncHandler(
         message: "Successfully deleted a product",
         payload: deletedProductData,
       });
-
-      // const newProduct = new ProductModel(authorizedEditProductData);
-      // newProduct.save();
-      // return res.json(newProduct);
     } catch (error: any) {
       throw new ErrorHandler(productControllerError);
     }

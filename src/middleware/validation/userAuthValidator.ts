@@ -38,14 +38,14 @@ import type {
   UpdateUserEmailData,
   UpdateUserPasswordData,
   UserDeleteData,
-  TypedRequestBody,
-  TypedValidatedResponseBody,
+  TypedUserAuthRequestBody,
+  TypedUserAuthValidatedResponseBody,
 } from "../../types/userAuthTypes";
 
 const signUpUserDataValidator = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedValidatedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthValidatedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -69,8 +69,8 @@ const signUpUserDataValidator = asyncHandler(
 
 const logInUserDataValidator = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedValidatedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthValidatedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -96,8 +96,8 @@ const logInUserDataValidator = asyncHandler(
 
 const updateUserEmailValidator = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedValidatedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthValidatedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -123,8 +123,8 @@ const updateUserEmailValidator = asyncHandler(
 
 const updateUserPasswordValidator = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedValidatedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthValidatedResponseBody,
     next: NextFunction
   ) => {
     try {
@@ -150,8 +150,8 @@ const updateUserPasswordValidator = asyncHandler(
 
 const deleteUserDataValidator = asyncHandler(
   async (
-    req: TypedRequestBody,
-    res: TypedValidatedResponseBody,
+    req: TypedUserAuthRequestBody,
+    res: TypedUserAuthValidatedResponseBody,
     next: NextFunction
   ) => {
     try {

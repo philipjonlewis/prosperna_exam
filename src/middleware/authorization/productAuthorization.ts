@@ -18,8 +18,14 @@ import ErrorHandler from "../custom/modifiedErrorHandler";
 
 import { productAuthorizationError } from "../../helpers/productErrorResponse";
 
+import type { TypedProductAuthorizedResponseBody } from "../../types/productTypes";
+
 const addProductDataAuthorization = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductAuthorizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { accessTokenAuthenticatedUserId, validatedAddProductData } =
         res.locals;
@@ -32,6 +38,7 @@ const addProductDataAuthorization = asyncHandler(
         product_owner: accessTokenAuthenticatedUserId,
         ...validatedAddProductData,
       };
+
       delete res.locals.validatedAddProductData;
       return next();
     } catch (error: any) {
@@ -41,7 +48,11 @@ const addProductDataAuthorization = asyncHandler(
 ) as RequestHandler;
 
 const editProductDataAuthorization = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductAuthorizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { accessTokenAuthenticatedUserId, validatedEditProductData } =
         res.locals;
@@ -69,7 +80,11 @@ const editProductDataAuthorization = asyncHandler(
 ) as RequestHandler;
 
 const deleteProductDataAuthorization = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductAuthorizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { accessTokenAuthenticatedUserId, validatedDeleteProductData } =
         res.locals;

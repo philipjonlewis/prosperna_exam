@@ -25,11 +25,11 @@ export interface UpdateUserPasswordData {
 
 export interface UserDeleteData extends UserSignupData {}
 
-export interface TypedRequestBody<T = {}> extends Request {
+export interface TypedUserAuthRequestBody<T = {}> extends Request {
   body: T;
 }
 
-export interface TypedSanitizedResponseBody extends Response {
+export interface TypedUserAuthSanitizedResponseBody extends Response {
   locals: {
     sanitizedSignUpUserData: UserSignupData;
     sanitizedLogInUserData: UserLogInData;
@@ -40,7 +40,7 @@ export interface TypedSanitizedResponseBody extends Response {
   // json({ code: number, status: boolean, message: string, payload: Y });
 }
 
-export interface TypedValidatedResponseBody extends Response {
+export interface TypedUserAuthValidatedResponseBody extends Response {
   locals: {
     sanitizedSignUpUserData?: UserSignupData;
     validatedSignUpUserData: UserSignupData;
@@ -55,6 +55,28 @@ export interface TypedValidatedResponseBody extends Response {
     validatedEditUserPassword: UpdateUserPasswordData;
 
     sanitizedDeleteUserData?: UserDeleteData;
+    validatedDeleteUserData: UserDeleteData;
+  };
+  // json({ code: number, status: boolean, message: string, payload: Y });
+}
+
+export interface TypedUserAuthControllerResponseBody extends Response {
+  locals: {
+    useragent?: any;
+    accessTokenAuthenticatedUserId: string;
+
+    validatedSignUpUserData: UserSignupData;
+
+    // sanitizedLogInUserData?: UserLogInData;
+    validatedLogInUserData: UserLogInData;
+
+    // sanitizedEditUserEmail?: UpdateUserEmailData;
+    validatedEditUserEmail: UpdateUserEmailData;
+
+    // sanitizedEditUserPassword?: UpdateUserPasswordData;
+    validatedEditUserPassword: UpdateUserPasswordData;
+
+    // sanitizedDeleteUserData?: UserDeleteData;
     validatedDeleteUserData: UserDeleteData;
   };
   // json({ code: number, status: boolean, message: string, payload: Y });

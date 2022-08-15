@@ -30,8 +30,14 @@ const validationOptions = {
   warnings: true,
 };
 
+import type { TypedProductValidatedResponseBody } from "../../types/productTypes";
+
 const addProductDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedAddProductData } = res.locals;
 
@@ -53,7 +59,11 @@ const addProductDataValidator = asyncHandler(
 ) as RequestHandler;
 
 const editProductDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedEditProductData } = res.locals;
 
@@ -75,7 +85,11 @@ const editProductDataValidator = asyncHandler(
 ) as RequestHandler;
 
 const deleteProductDataValidator = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedProductValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { sanitizedDeleteProductData } = res.locals;
 

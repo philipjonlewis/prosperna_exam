@@ -16,8 +16,20 @@ const sanitizationOptions = {
   },
 };
 
+import type {
+  TypedProductRequestBody,
+  TypedProductSanitizedResponseBody,
+  ProductCreateData,
+  ProductEditData,
+  ProductDeleteData,
+} from "../../types/productTypes";
+
 const addProductDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedProductRequestBody<ProductCreateData>,
+    res: TypedProductSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { product_name, product_description, product_price, product_tag } =
         req.body;
@@ -31,16 +43,13 @@ const addProductDataSanitizer = asyncHandler(
           product_description.toString().trim(),
           sanitizationOptions
         ),
-        product_price: sanitizeHtml(
-          product_price.toString().trim(),
-          sanitizationOptions
+        product_price: Number(
+          sanitizeHtml(product_price.toString().trim(), sanitizationOptions)
         ),
         product_tag: product_tag.map((tag: string) => {
           return sanitizeHtml(tag.toString().trim(), sanitizationOptions);
         }),
       };
-
-
 
       return next();
     } catch (error: any) {
@@ -50,7 +59,11 @@ const addProductDataSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const editProductDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedProductRequestBody<ProductEditData>,
+    res: TypedProductSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const {
         _id,
@@ -80,9 +93,8 @@ const editProductDataSanitizer = asyncHandler(
           ),
         }),
         ...(product_price && {
-          product_price: sanitizeHtml(
-            product_price.toString().trim(),
-            sanitizationOptions
+          product_price: Number(
+            sanitizeHtml(product_price.toString().trim(), sanitizationOptions)
           ),
         }),
         ...(product_tag && {
@@ -92,8 +104,6 @@ const editProductDataSanitizer = asyncHandler(
         }),
       };
 
-     
-
       return next();
     } catch (error: any) {
       throw new ErrorHandler(productSanitizationError);
@@ -102,7 +112,11 @@ const editProductDataSanitizer = asyncHandler(
 ) as RequestHandler;
 
 const deleteProductDataSanitizer = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (
+    req: TypedProductRequestBody<ProductDeleteData>,
+    res: TypedProductSanitizedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       const { _id, product_owner } = req.body;
 
@@ -113,8 +127,6 @@ const deleteProductDataSanitizer = asyncHandler(
           sanitizationOptions
         ),
       };
-
-    
 
       return next();
     } catch (error: any) {

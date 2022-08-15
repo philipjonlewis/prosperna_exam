@@ -9,11 +9,15 @@ import UserAuth from "../../model/dbModel/userAuthDbModel";
 
 import { userAuthenticationError } from "../../helpers/userAuthErrorResponse";
 
-import type { TypedValidatedResponseBody } from "../../types/userAuthTypes";
+import type { TypedUserAuthValidatedResponseBody } from "../../types/userAuthTypes";
 import type { TypedAccessTokenAuthenticatedResponseBody } from "../../types/cookieAuthTypes";
 
 const signUpAuthenticator = asyncHandler(
-  async (req: Request, res: TypedValidatedResponseBody, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedUserAuthValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       if (
         await UserAuth.exists({
@@ -30,7 +34,11 @@ const signUpAuthenticator = asyncHandler(
 ) as RequestHandler;
 
 const logInAuthenticator = asyncHandler(
-  async (req: Request, res: TypedValidatedResponseBody, next: NextFunction) => {
+  async (
+    req: Request,
+    res: TypedUserAuthValidatedResponseBody,
+    next: NextFunction
+  ) => {
     try {
       if (
         await UserAuth.exists({
