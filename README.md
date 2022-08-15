@@ -76,15 +76,12 @@ Made via Postman
 
    > `npm run build`
 
-8. Run this code to test with vitest ui
+8. Run this code for unit testing
+
+> `npm run test`
+
+9. Run this code to test with vitest ui
 
    > `npm run testwatch`
-
-9. Run this code to test
-
-   > `npm run test`
-
-10. Run this code to test with vitest ui
-    > `npm run testwatch`
 
 ---

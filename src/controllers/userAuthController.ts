@@ -1,6 +1,5 @@
 import path from "path";
 const scriptName = path.basename(__filename);
-
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
@@ -30,10 +29,16 @@ const signUpUserDataController = asyncHandler(
       } = res.locals;
       // const { email, password, passwordConfirmation } = validatedSignUpUserData;
 
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPasswordConfirmation = await bcrypt.hash(
+        passwordConfirmation,
+        10
+      );
+
       const newUser = new UserAuth({
         email,
-        password,
-        passwordConfirmation,
+        password: hashedPassword,
+        passwordConfirmation: hashedPasswordConfirmation,
         ...(useragent && {
           userAgent: [{ ...(await userAgentCleaner(useragent)) }],
         }),
@@ -69,6 +74,7 @@ const signUpUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
+      console.log(error);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -128,6 +134,7 @@ const loginUserDataController = asyncHandler(
           },
         });
     } catch (error: any) {
+      console.log(error);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -170,14 +177,9 @@ const verifyUserDataController = asyncHandler(
 const updateUserEmailController = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const { validatedEditUserEmail, refreshTokenAuthenticatedUserId } =
-        await res.locals;
-
-      // Must use userId for params and have a setting for existing password to new password
-      // const { email, newEmail, password } = validatedEditUserEmail;
+      const { validatedEditUserEmail } = await res.locals;
 
       const existingUser = await UserAuth.find({
-        _id: refreshTokenAuthenticatedUserId,
         email: validatedEditUserEmail.email,
       })
         .select("+email +password +passwordConfirmation -__v")
@@ -203,11 +205,14 @@ const updateUserEmailController = asyncHandler(
         validatedEditUserEmail.newEmail
       );
 
-      await UserAuth.findOneAndUpdate(_id, {
-        email: validatedEditUserEmail.newEmail,
-        refreshTokens: refreshToken,
-        accessTokens: accessToken,
-      });
+      await UserAuth.updateOne(
+        { _id: _id },
+        {
+          email: validatedEditUserEmail.newEmail,
+          refreshTokens: refreshToken,
+          accessTokens: accessToken,
+        }
+      );
 
       delete res.locals.validatedEditUserEmail;
 
@@ -233,14 +238,14 @@ const updateUserEmailController = asyncHandler(
 const updateUserPasswordController = asyncHandler(
   async (req: Request, res: Response) => {
     try {
-      const { validatedEditUserPassword, refreshTokenAuthenticatedUserId } =
+      const { validatedEditUserPassword, accessTokenAuthenticatedUserId } =
         await res.locals;
 
       // Must use userId for params and have a setting for existing password to new password
       // const { email, newEmail, password } = validatedEditUserEmail;
 
       const existingUser = await UserAuth.find({
-        _id: refreshTokenAuthenticatedUserId,
+        _id: accessTokenAuthenticatedUserId,
         email: validatedEditUserPassword.email,
       })
         .select("+email +password +passwordConfirmation -__v")
@@ -276,12 +281,15 @@ const updateUserPasswordController = asyncHandler(
         10
       );
 
-      await UserAuth.findOneAndUpdate(_id, {
-        password: newPassword,
-        passwordConfirmation: newPasswordConfirmation,
-        refreshToken: refreshToken,
-        accessToken: accessToken,
-      });
+      await UserAuth.findByIdAndUpdate(
+        { _id: accessTokenAuthenticatedUserId },
+        {
+          password: newPassword,
+          passwordConfirmation: newPasswordConfirmation,
+          refreshToken: refreshToken,
+          accessToken: accessToken,
+        }
+      );
 
       delete res.locals.validatedEditUserEmail;
 

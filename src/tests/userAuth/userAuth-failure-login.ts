@@ -1,6 +1,14 @@
 import request from "supertest";
 import app from "../../app";
-import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
+import {
+  describe,
+  expect,
+  test,
+  beforeAll,
+  afterAll,
+  afterEach,
+  beforeEach,
+} from "vitest";
 import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import {
@@ -20,9 +28,9 @@ import {
 } from "../../helpers/userAuthErrorResponse";
 
 describe("User Auth API - Failure - Log In", () => {
-  beforeAll(async () => {
-    await databaseConnection();
 
+
+  beforeEach(async () => {
     await UserAuth.findOneAndDelete({
       email: testUserCredentials.email + "@email.com",
     });

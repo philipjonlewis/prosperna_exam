@@ -37,7 +37,7 @@ let userId: Types.ObjectId;
 
 describe("Product API - Read - Failure", () => {
   beforeAll(async () => {
-    await databaseConnection();
+    await databaseConnection("testing");
 
     const newUser = new UserAuth({
       email: testUserCredentials.email,

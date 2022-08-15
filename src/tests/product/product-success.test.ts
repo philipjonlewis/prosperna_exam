@@ -37,7 +37,7 @@ let userId: Types.ObjectId;
 
 describe("Product API - Success", () => {
   beforeAll(async () => {
-    await databaseConnection();
+    await databaseConnection("testing");
 
     const newUser = new UserAuth({
       email: testUserCredentials.email,
@@ -61,8 +61,8 @@ describe("Product API - Success", () => {
   });
 
   afterAll(async () => {
-    await UserAuth.findOneAndDelete({ email: testUserCredentials.email });
     await ProductModel.deleteMany({ product_owner: userId });
+    await UserAuth.findOneAndDelete({ email: testUserCredentials.email });
   });
 
   afterEach(async () => {
