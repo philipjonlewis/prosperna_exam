@@ -12,7 +12,7 @@ philipjonlewis@gmail.com
 
 ### CRUD REST API Authentication and Product server
 
-[API Documentation](https://www.example.com)
+[API Documentation](https://documenter.getpostman.com/view/12540159/VUjSGPrQ)
 Made via Postman
 
 #### Use [This](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments) VS Code Extension for a better experience in reading comments
