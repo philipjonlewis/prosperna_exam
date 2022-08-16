@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../app";
+import { config } from "../../config";
 import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import ProductModel from "../../model/dbModel/productsDbModel";
 import {
@@ -38,7 +38,6 @@ let userId: Types.ObjectId;
 
 describe("Product API - Delete - Failure", () => {
   beforeAll(async () => {
-
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -71,7 +70,7 @@ describe("Product API - Delete - Failure", () => {
 
   test("Delete Product - Not Logged In", async () => {
     const deleteProduct = await request(app)
-      .delete("/api_v1/products")
+      .delete(`${config.URL}/products`)
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -83,13 +82,13 @@ describe("Product API - Delete - Failure", () => {
   });
 
   test("Delete Product - Incomplete Data", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     await request(app)
-      .post("/api_v1/products")
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
@@ -97,7 +96,7 @@ describe("Product API - Delete - Failure", () => {
       .expect(201);
 
     const deleteProduct = await request(app)
-      .delete("/api_v1/products")
+      .delete(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send({
         product_owner: userId,

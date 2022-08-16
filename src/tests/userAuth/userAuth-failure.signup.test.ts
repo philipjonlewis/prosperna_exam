@@ -1,11 +1,10 @@
 import request from "supertest";
 import app from "../../app";
+import { config } from "../../config";
 import {
   describe,
   expect,
   test,
-  beforeAll,
-  afterAll,
   afterEach,
   beforeEach,
 } from "vitest";
@@ -41,7 +40,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Invalid Email Format", async () => {
     const res = await request(app)
-      .post("/api_v1/user/signup")
+      .post(`${config.URL}/user/signup`)
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password + "888!",
@@ -74,7 +73,7 @@ describe("User Auth API - Failure - Sign Up", () => {
     await newUser.save();
 
     const res = await request(app)
-      .post("/api_v1/user/signup")
+      .post(`${config.URL}/user/signup`)
       .send({
         email: "existinguser@email.com",
         password: "ExistingUser888!",
@@ -93,7 +92,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Invalid Password Format", async () => {
     const res = await request(app)
-      .post("/api_v1/user/signup")
+      .post(`${config.URL}/user/signup`)
       .send({
         email: testUserCredentials.email + "@email.com",
         password: testUserCredentials.password,
@@ -108,7 +107,7 @@ describe("User Auth API - Failure - Sign Up", () => {
 
   test("Password Confirmation Similarity & Format", async () => {
     const res = await request(app)
-      .post("/api_v1/user/signup")
+      .post(`${config.URL}/user/signup`)
       .send({
         email: testUserCredentials.email + "@email.com",
         password: testUserCredentials.password + "888!",

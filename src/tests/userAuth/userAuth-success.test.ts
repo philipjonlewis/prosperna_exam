@@ -1,17 +1,7 @@
 import request from "supertest";
 import app from "../../app";
-import bcrypt from "bcryptjs";
-
-import {
-  describe,
-  expect,
-  test,
-  beforeAll,
-  afterAll,
-  afterEach,
-  beforeEach,
-} from "vitest";
-// import bcryp
+import { config } from "../../config";
+import { describe, expect, test } from "vitest";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 
 import {
@@ -19,24 +9,10 @@ import {
   signedAccessToken,
 } from "../../utils/cookieOptions";
 
-const testUserCredentials = {
-  email: "successuserauth@email.com",
-  password: "SamplePassword888!",
-  passwordConfirmation: "SamplePassword888!",
-  newEmail: "userauthsuccessnewemail@test.com",
-  newPassword: "PeoplePerson612!",
-};
-
-const testmail = {
-  signup: "testsuccesssignup@email.com",
-  login: "testsuccesslogin@email.com",
-  logout: "testsuccesslogout@email.com",
-  verify: "testsuccessverify@email.com",
-  editemail: "testsuccesseditemail@email.com",
-  editemailnew: "testsuccesseditemailnew@email.com",
-  editpassword: "testsuccesseditpassword@email.com",
-  deleteuser: "testsuccessdeleteuser@email.com",
-};
+import {
+  userAuthSuccessTestUserCredentials as testUserCredentials,
+  userAuthSuccessTestMail as testmail,
+} from "../mock/mockTestingCredentials";
 
 import {
   userAuthSignUpSuccessResponse,
@@ -51,7 +27,7 @@ import {
 describe("User Auth API - Success", () => {
   test("Sign Up", async () => {
     const res = await request(app)
-      .post("/api_v1/user/signup")
+      .post(`${config.URL}/user/signup`)
       .send({
         email: testmail.signup,
         password: testUserCredentials.password,
@@ -90,7 +66,7 @@ describe("User Auth API - Success", () => {
     await newUser.save();
 
     const res = await request(app)
-      .post("/api_v1/user/login")
+      .post(`${config.URL}/user/login`)
       .send({
         email: testmail.login,
         password: testUserCredentials.password,
@@ -125,13 +101,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testmail.logout,
       password: testUserCredentials.password,
     });
 
     const logoutRes = await request(app)
-      .get("/api_v1/user/logout")
+      .get(`${config.URL}/user/logout`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -161,13 +137,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testmail.verify,
       password: testUserCredentials.password,
     });
 
     const verifyUser = await request(app)
-      .get("/api_v1/user/verify")
+      .get(`${config.URL}/user/verify`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
@@ -197,13 +173,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testmail.editemail,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/api_v1/user/update/email")
+      .patch(`${config.URL}/user/update/email`)
       .send({
         email: testmail.editemail,
         newEmail: testmail.editemailnew,
@@ -245,13 +221,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testmail.editpassword,
       password: testUserCredentials.password,
     });
 
     const editPassword = await request(app)
-      .patch("/api_v1/user/update/password")
+      .patch(`${config.URL}/user/update/password`)
       .send({
         email: testmail.editpassword,
         password: testUserCredentials.password,
@@ -291,13 +267,13 @@ describe("User Auth API - Success", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testmail.deleteuser,
       password: testUserCredentials.password,
     });
 
     const deleteUser = await request(app)
-      .delete("/api_v1/user/delete")
+      .delete(`${config.URL}/user/delete`)
       .send({
         email: testmail.deleteuser,
         password: testUserCredentials.password,

@@ -1,39 +1,20 @@
 import request from "supertest";
 import app from "../../app";
-import {
-  describe,
-  expect,
-  test,
-  beforeAll,
-  afterAll,
-  afterEach,
-  beforeEach,
-} from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
+import { config } from "../../config";
+
+import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
+
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import ProductModel from "../../model/dbModel/productsDbModel";
 import {
   signedRefreshToken,
   signedAccessToken,
 } from "../../utils/cookieOptions";
-import { Types } from "mongoose";
-
-const testUserCredentials = {
-  email: "userproduct@email.com",
-  password: "SamplePassword888!",
-  passwordConfirmation: "SamplePassword888!",
-  newEmail: "userauthsuccessnewemail@test.com",
-  newPassword: "PeoplePerson612!",
-};
-
-const testProductData = {
-  product_name: "Product Testing Name",
-  product_description: "Product testing description",
-  product_price: 999,
-  product_tag: ["First Tag", "Second Tag", "Third Tag"],
-};
-
-let userId: Types.ObjectId;
+import type { IdType } from "../../types/commonTypes";
+import {
+  productSuccessTestUserCredentials as testUserCredentials,
+  productSuccessTestProductData as testProductData,
+} from "../mock/mockTestingCredentials";
 
 import {
   productCreateSuccessResponse,
@@ -41,6 +22,8 @@ import {
   productEditSuccessResponse,
   productDeleteSuccessResponse,
 } from "../../helpers/productSuccessResponse";
+
+let userId: IdType;
 
 describe("Product API - Success", () => {
   beforeAll(async () => {
@@ -75,13 +58,13 @@ describe("Product API - Success", () => {
   });
 
   test("Create Product", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const addProduct = await request(app)
-      .post("/api_v1/products")
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
@@ -110,25 +93,25 @@ describe("Product API - Success", () => {
   });
 
   test("Read Product", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
-    const product = await request(app)
-      .post("/api_v1/products")
+    const product = (await request(app)
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(201);
+      .expect(201)) as any;
 
-    const getProduct = await request(app)
-      .get("/api_v1/products")
+    const getProduct = (await request(app)
+      .get(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(201);
+      .expect(201)) as any;
 
     expect(getProduct.body).toEqual(
       expect.objectContaining(productReadSuccessResponse(product))
@@ -136,21 +119,21 @@ describe("Product API - Success", () => {
   });
 
   test("Update Product", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const addedProject = await request(app)
-      .post("/api_v1/products")
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(201);
 
-    const editProduct = await request(app)
-      .patch("/api_v1/products")
+    const editProduct = (await request(app)
+      .patch(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send({
         _id: addedProject.body.payload._id,
@@ -162,7 +145,7 @@ describe("Product API - Success", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(200);
+      .expect(200)) as any;
 
     expect(editProduct.body).toEqual(
       expect.objectContaining(productEditSuccessResponse(editProduct))
@@ -170,21 +153,21 @@ describe("Product API - Success", () => {
   });
 
   test("Delete Product", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const addedProject = await request(app)
-      .post("/api_v1/products")
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(201);
 
-    const deleteProduct = await request(app)
-      .delete("/api_v1/products")
+    const deleteProduct = (await request(app)
+      .delete(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send({
         _id: addedProject.body.payload._id,
@@ -192,7 +175,7 @@ describe("Product API - Success", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(200);
+      .expect(200)) as any;
 
     expect(deleteProduct.body).toEqual(
       expect.objectContaining(productDeleteSuccessResponse(deleteProduct))

@@ -1,15 +1,13 @@
 import request from "supertest";
 import app from "../../app";
+import { config } from "../../config";
 import {
   describe,
   expect,
   test,
-  beforeAll,
-  afterAll,
   afterEach,
   beforeEach,
 } from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import {
   signedRefreshToken,
@@ -42,7 +40,7 @@ describe("User Auth API - Failure - Log In", () => {
 
   test("Invalid Email Format", async () => {
     const res = await request(app)
-      .post("/api_v1/user/login")
+      .post(`${config.URL}/user/login`)
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password + "888!",
@@ -56,7 +54,7 @@ describe("User Auth API - Failure - Log In", () => {
 
   test("Invalid Password Format", async () => {
     const res = await request(app)
-      .post("/api_v1/user/login")
+      .post(`${config.URL}/user/login`)
       .send({
         email: testUserCredentials.email + "@email.com",
         password: "SamplePassword777",
@@ -88,7 +86,7 @@ describe("User Auth API - Failure - Log In", () => {
     await newUser.save();
 
     const res = await request(app)
-      .post("/api_v1/user/login")
+      .post(`${config.URL}/user/login`)
       .send({
         email: testUserCredentials.email + "@email.com",
         password: "PeoplePerson777!",
@@ -102,7 +100,7 @@ describe("User Auth API - Failure - Log In", () => {
 
   test("Non Existent User", async () => {
     const res = await request(app)
-      .post("/api_v1/user/login")
+      .post(`${config.URL}/user/login`)
       .send({
         email: "anothertestemail@gmail.com",
         password: testUserCredentials.password + "888!",

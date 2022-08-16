@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../app";
+import { config } from "../../config";
 import { describe, expect, test, beforeAll, afterAll, afterEach } from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import ProductModel from "../../model/dbModel/productsDbModel";
 import {
@@ -27,17 +27,10 @@ const testProductData = {
   product_tag: ["First Tag", "Second Tag", "Third Tag"],
 };
 
-const incompleteTestProductData = {
-  product_description: testProductData.product_description,
-  product_price: testProductData.product_price,
-  product_tag: testProductData.product_tag,
-};
-
 let userId: Types.ObjectId;
 
 describe("Product API - Read - Failure", () => {
   beforeAll(async () => {
-
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -70,7 +63,7 @@ describe("Product API - Read - Failure", () => {
 
   test("Read Product - Not Logged In", async () => {
     const getProduct = await request(app)
-      .get("/api_v1/products")
+      .get(`${config.URL}/products`)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(cookieAuthenticationError.error.code);
@@ -81,13 +74,13 @@ describe("Product API - Read - Failure", () => {
   });
 
   test("Read Product - Non-Existent Product Id", async () => {
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     await request(app)
-      .post("/api_v1/products")
+      .post(`${config.URL}/products`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
       .set("Accept", "application/json")
@@ -95,7 +88,7 @@ describe("Product API - Read - Failure", () => {
       .expect(201);
 
     const getProduct = await request(app)
-      .get("/api_v1/products?productId=62f86e1971c9d2cfd98bccd8")
+      .get(`${config.URL}/products?productId=62f86e1971c9d2cfd98bccd8`)
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)

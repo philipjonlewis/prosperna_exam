@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 const app: Express = express();
 
+import { config } from "./config";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
@@ -64,8 +65,9 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 
 databaseConnection();
 
-app.use("/api_v1/user", userAuthRoutes);
-app.use("/api_v1/products", productRoutes);
+app.use(`${config.URL}/user`, userAuthRoutes);
+app.use(`${config.URL}/products`, productRoutes);
+
 app.get("*", (req: Request, res: Response) => {
   // Should send a more formatted response
   res.send("Page does not exit");

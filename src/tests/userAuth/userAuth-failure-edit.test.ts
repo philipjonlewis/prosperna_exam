@@ -1,15 +1,13 @@
 import request from "supertest";
 import app from "../../app";
+import { config } from "../../config";
 import {
   describe,
   expect,
   test,
-  beforeAll,
-  afterAll,
   afterEach,
   beforeEach,
 } from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import {
   signedRefreshToken,
@@ -60,13 +58,13 @@ describe("User Auth API - Failure - Edit", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/api_v1/user/update/email")
+      .patch(`${config.URL}/user/update/email`)
       .send({
         email: testUserCredentials.email,
         newEmail: "newuserauthfailureeditemail.com",
@@ -101,13 +99,13 @@ describe("User Auth API - Failure - Edit", () => {
 
     await newUser.save();
 
-    const loginRes = await request(app).post("/api_v1/user/login").send({
+    const loginRes = await request(app).post(`${config.URL}/user/login`).send({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
     });
 
     const editEmail = await request(app)
-      .patch("/api_v1/user/update/password")
+      .patch(`${config.URL}/user/update/password`)
       .send({
         email: testUserCredentials.email,
         password: testUserCredentials.password,
