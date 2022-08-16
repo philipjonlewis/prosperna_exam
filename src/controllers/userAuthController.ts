@@ -209,19 +209,23 @@ const updateUserEmailController = asyncHandler(
         }
       );
 
-      return res
-        .status(200)
-        .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
-        .cookie("authentication-access", accessToken, accessCookieOptions)
-        .json({
-          success: true,
-          message: "Successfully changed email",
-          payload: {
-            _id,
-            oldEmail: validatedEditUserEmail.email,
-            email: validatedEditUserEmail.newEmail,
-          },
-        });
+      return (
+        res
+          .status(200)
+          // .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
+          // .cookie("authentication-access", accessToken, accessCookieOptions)
+          .clearCookie("authentication-refresh", clearAuthCookieOptions)
+          .clearCookie("authentication-access", clearAuthCookieOptions)
+          .json({
+            success: true,
+            message: "Successfully changed email - Please Log In Again",
+            payload: {
+              _id,
+              oldEmail: validatedEditUserEmail.email,
+              email: validatedEditUserEmail.newEmail,
+            },
+          })
+      );
     } catch (error: any) {
       devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
@@ -284,19 +288,23 @@ const updateUserPasswordController = asyncHandler(
           accessToken: accessToken,
         }
       );
-
-      return res
-        .status(200)
-        .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
-        .cookie("authentication-access", accessToken, accessCookieOptions)
-        .json({
-          success: true,
-          message: "Successfully changed password",
-          payload: {
-            _id,
-            email,
-          },
-        });
+      // must log out after
+      return (
+        res
+          .status(200)
+          // .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
+          // .cookie("authentication-access", accessToken, accessCookieOptions)
+          .clearCookie("authentication-refresh", clearAuthCookieOptions)
+          .clearCookie("authentication-access", clearAuthCookieOptions)
+          .json({
+            success: true,
+            message: "Successfully changed password - Please Log In Again",
+            payload: {
+              _id,
+              email,
+            },
+          })
+      );
     } catch (error: any) {
       devEnvironment && console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);

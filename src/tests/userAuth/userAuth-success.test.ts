@@ -221,7 +221,7 @@ describe("User Auth API - Success", () => {
     expect(editEmail.body).toEqual(
       expect.objectContaining({
         success: true,
-        message: "Successfully changed email",
+        message: "Successfully changed email - Please Log In Again",
         payload: expect.objectContaining({
           _id: expect.any(String),
           oldEmail: expect.any(String),
@@ -271,7 +271,7 @@ describe("User Auth API - Success", () => {
     expect(editPassword.body).toEqual(
       expect.objectContaining({
         success: true,
-        message: "Successfully changed password",
+        message: "Successfully changed password - Please Log In Again",
         payload: expect.objectContaining({
           _id: expect.any(String),
           email: expect.any(String),
