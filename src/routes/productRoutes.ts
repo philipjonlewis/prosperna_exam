@@ -33,6 +33,8 @@ import {
   deleteProductDataController,
 } from "../controllers/productController";
 
+
+
 router.use([
   refreshCookieAuthentication,
   accessCookieAuthentication,

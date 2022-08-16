@@ -68,6 +68,8 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
   next();
 });
 
+
+
 databaseConnection();
 
 app.use("/api_v1/user", userAuthRoutes);

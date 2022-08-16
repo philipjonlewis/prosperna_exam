@@ -15,6 +15,8 @@ philipjonlewis@gmail.com
 [API Documentation](https://www.example.com)
 Made via Postman
 
+#### Use [This](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments) VS Code Extension for a better experience in reading comments
+
 ---
 
 ## Tech Stack

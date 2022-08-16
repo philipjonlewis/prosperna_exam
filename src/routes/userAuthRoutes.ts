@@ -42,6 +42,21 @@ import {
   deleteUserDataController,
 } from "../controllers/userAuthController";
 
+/**
+ * Router : User Auth
+ * Description : Routes for all user auth activites
+ * User Activities :
+ *  - Sign Up
+ *  - Log In
+ *  - Log Out,
+ *  - Verify,
+ *  - Update Email,
+ *  - Update Password,
+ *  - Delete User
+ */
+
+// ! Route : http://localhost:4000/api_v1/user/signup
+// * Description : API Endpoint for signing up new user
 router
   .route("/signup")
   .post([
@@ -51,6 +66,8 @@ router
     signUpUserDataController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/login
+// * Description : API Endpoint for user log in
 router
   .route("/login")
   .post([
@@ -60,6 +77,8 @@ router
     loginUserDataController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/login
+// * Description : API Endpoint for user log out
 router
   .route("/logout")
   .get([
@@ -69,6 +88,8 @@ router
     logOutUserDataController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/verify
+// * Description : API Endpoint to verify if user is still logged in
 router
   .route("/verify")
   .get([
@@ -78,6 +99,8 @@ router
     verifyUserDataController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/update/email
+// * Description : API Endpoint for user to update email
 router
   .route("/update/email")
   .patch([
@@ -89,6 +112,8 @@ router
     updateUserEmailController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/update/password
+// * Description : API Endpoint for user to update password
 router
   .route("/update/password")
   .patch([
@@ -100,6 +125,8 @@ router
     updateUserPasswordController,
   ]);
 
+// ! Route : http://localhost:4000/api_v1/user/delete
+// * Description : API Endpoint for user to delete their own account
 router
   .route("/delete")
   .delete([
