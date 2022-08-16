@@ -1,5 +1,7 @@
+import { IdType } from "../types/commonTypes";
+
 export const userAuthSignUpSuccessResponse = async (
-  _id: any,
+  _id: IdType,
   email: string
 ) => {
   return {
@@ -12,7 +14,10 @@ export const userAuthSignUpSuccessResponse = async (
   };
 };
 
-export const userAuthLogInSuccessResponse = async (_id: any, email: string) => {
+export const userAuthLogInSuccessResponse = async (
+  _id: IdType,
+  email: string
+) => {
   return {
     success: true,
     message: "Successfully Logged In",
@@ -34,7 +39,7 @@ export const userAuthVerifyUserSuccessResponse = {
 };
 
 export const userAuthUpdateEmailSuccessResponse = async (
-  _id: any,
+  _id: IdType,
   oldEmail: string,
   email: string
 ) => {
@@ -50,7 +55,7 @@ export const userAuthUpdateEmailSuccessResponse = async (
 };
 
 export const userAuthUpdatePasswordSuccessResponse = async (
-  _id: any,
+  _id: IdType,
   email: string
 ) => {
   return {

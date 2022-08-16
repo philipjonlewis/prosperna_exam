@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, response } from "express";
+import { IdType } from "./commonTypes";
 
 export interface ProductCreateData {
   product_name: string;
@@ -6,9 +7,17 @@ export interface ProductCreateData {
   product_price: number;
   product_tag: string[];
 }
+export interface ProductData {
+  _id: IdType;
+  product_owner: string;
+  product_name: string;
+  product_description: string;
+  product_price: number;
+  product_tag: string[];
+}
 
 export interface ProductEditData {
-  _id: string;
+  _id: IdType;
   product_owner: string;
   product_name?: string;
   product_description?: string;
@@ -17,7 +26,7 @@ export interface ProductEditData {
 }
 
 export interface ProductDeleteData {
-  _id: string;
+  _id: IdType;
   product_owner: string;
 }
 

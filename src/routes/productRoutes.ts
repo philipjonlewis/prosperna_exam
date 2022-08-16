@@ -108,6 +108,7 @@ router
   .delete([
     // ! Route : http://localhost:4000/api_v1/products/
     // * Description : API Endpoint for deleting a product
+    // If body data has _id, controller will only delete one product, but if the body has no _id field, controller will delete all products of the user
     deleteProductDataSanitizer,
     deleteProductDataValidator,
     deleteProductDataAuthorization,

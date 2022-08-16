@@ -1,3 +1,5 @@
+import type { ProductData, ProductEditData } from "../types/productTypes";
+
 export const productCreateSuccessResponse = async (
   _id: any,
   name: any,
@@ -18,7 +20,7 @@ export const productCreateSuccessResponse = async (
   };
 };
 
-export const productReadSuccessResponse = async (products: any) => {
+export const productReadSuccessResponse = async (products: ProductData[]) => {
   return {
     success: true,
     message: "Successfully reading products",
@@ -27,15 +29,20 @@ export const productReadSuccessResponse = async (products: any) => {
   };
 };
 
-export const productEditSuccessResponse = async (editedProductData: any) => {
+export const productEditSuccessResponse = async (
+  editedProductData: ProductEditData
+) => {
   return {
     success: true,
-    message: "Successfully edited product",
+    message: "Successfully Edited a Product",
     payload: editedProductData,
   };
 };
 
-export const productDeleteSuccessResponse = async (deletedProductData: any) => {
+export const productDeleteSuccessResponse = async (deletedProductData: {
+  acknowledged: boolean;
+  deletedCount: number;
+}) => {
   return {
     success: true,
     message: "Successfully deleted a product",

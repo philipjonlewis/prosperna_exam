@@ -7,7 +7,12 @@ import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
 import { productControllerError } from "../helpers/productErrorResponse";
 
 import ProductModel from "../model/dbModel/productsDbModel";
-import type { TypedProductControllerResponseBody } from "../types/productTypes";
+import type {
+  TypedProductControllerResponseBody,
+  ProductData,
+  ProductEditData,
+  ProductDeleteData,
+} from "../types/productTypes";
 import {
   productCreateSuccessResponse,
   productReadSuccessResponse,
@@ -55,10 +60,10 @@ const getProductDataController = asyncHandler(
       const { productId } = req.query;
       const { accessTokenAuthenticatedUserId } = res.locals;
 
-      const products = await ProductModel.find({
+      const products = (await ProductModel.find({
         ...(productId && { _id: productId }),
         product_owner: accessTokenAuthenticatedUserId,
-      }).select("-__v -product_owner +_id +product_tag");
+      })) as ProductData[];
 
       return res.status(201).json(await productReadSuccessResponse(products));
     } catch (error: any) {
@@ -75,14 +80,14 @@ const editProductDataController = asyncHandler(
       const { authorizedEditProductData, accessTokenAuthenticatedUserId } =
         res.locals;
 
-      const editedProductData = await ProductModel.findOneAndUpdate(
+      const editedProductData = (await ProductModel.findOneAndUpdate(
         {
           _id: authorizedEditProductData._id,
           product_owner: accessTokenAuthenticatedUserId,
         },
         { ...authorizedEditProductData },
         { new: true }
-      ).select("-__v +product_tag");
+      )) as ProductEditData;
 
       return res
         .status(200)

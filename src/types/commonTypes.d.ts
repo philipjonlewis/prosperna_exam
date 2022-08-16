@@ -1,3 +1,4 @@
+import Types from mongoose
 
 import type {
   UserSignupData,
@@ -6,4 +7,6 @@ import type {
   UpdateUserPasswordData,
   UserDeleteData,
 } from "./userAuthTypes";
+
+export type IdType = Types.ObjectId | string;
 
