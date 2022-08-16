@@ -1,10 +1,13 @@
 class modifiedErrorHandler extends Error {
-  statusCode: number;
-  constructor(err: { statusCode: number; message: string }) {
+  error: any;
+  code: any;
+  message: any;
+  constructor(errorObject: { error: any }) {
     super();
-    this.statusCode = err.statusCode;
-    this.message = err.message;
+    this.error = errorObject;
   }
+
+
 }
 
 export default modifiedErrorHandler;

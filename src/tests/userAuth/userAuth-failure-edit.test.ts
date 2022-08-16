@@ -75,7 +75,7 @@ describe("User Auth API - Failure - Edit", () => {
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(editEmail.body).toEqual(
       expect.objectContaining(userAuthValidationError)
@@ -116,7 +116,7 @@ describe("User Auth API - Failure - Edit", () => {
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(editEmail.body).toEqual(
       expect.objectContaining(userAuthValidationError)

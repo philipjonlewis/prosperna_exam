@@ -38,6 +38,16 @@ const testmail = {
   deleteuser: "testsuccessdeleteuser@email.com",
 };
 
+import {
+  userAuthSignUpSuccessResponse,
+  userAuthLogInSuccessResponse,
+  userAuthlogOutSuccessResponse,
+  userAuthVerifyUserSuccessResponse,
+  userAuthUpdateEmailSuccessResponse,
+  userAuthUpdatePasswordSuccessResponse,
+  userAuthDeleteUserSuccessResponse,
+} from "../../helpers/userAuthSuccessResponse";
+
 describe("User Auth API - Success", () => {
   test("Sign Up", async () => {
     const res = await request(app)
@@ -50,16 +60,13 @@ describe("User Auth API - Success", () => {
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
       .expect(200);
-
     expect(res.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully Signed Up",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          email: expect.any(String),
-        }),
-      })
+      expect.objectContaining(
+        await userAuthSignUpSuccessResponse(
+          res.body.payload._id,
+          testmail.signup
+        )
+      )
     );
 
     await UserAuth.deleteOne({ email: testmail.signup });
@@ -93,14 +100,9 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(await res.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully logged in",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          email: expect.any(String),
-        }),
-      })
+      expect.objectContaining(
+        await userAuthLogInSuccessResponse(res.body.payload._id, testmail.login)
+      )
     );
 
     await UserAuth.deleteOne({ email: testmail.login });
@@ -136,10 +138,7 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(logoutRes.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Logged Out",
-      })
+      expect.objectContaining(userAuthlogOutSuccessResponse)
     );
 
     await UserAuth.deleteOne({ email: testmail.logout });
@@ -175,10 +174,7 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(verifyUser.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "User is still logged in",
-      })
+      expect.objectContaining(userAuthVerifyUserSuccessResponse)
     );
 
     await UserAuth.deleteOne({ email: testmail.verify });
@@ -219,15 +215,13 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(editEmail.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully changed email - Please Log In Again",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          oldEmail: expect.any(String),
-          email: expect.any(String),
-        }),
-      })
+      expect.objectContaining(
+        userAuthUpdateEmailSuccessResponse(
+          loginRes.body.payload._id,
+          testmail.editemail,
+          testmail.editemailnew
+        )
+      )
     );
 
     await UserAuth.deleteOne({ email: testmail.editemail });
@@ -269,14 +263,12 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(editPassword.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully changed password - Please Log In Again",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          email: expect.any(String),
-        }),
-      })
+      expect.objectContaining(
+        userAuthUpdatePasswordSuccessResponse(
+          loginRes.body.payload._id,
+          testmail.editpassword
+        )
+      )
     );
 
     await UserAuth.deleteOne({ email: testmail.editpassword });
@@ -317,10 +309,7 @@ describe("User Auth API - Success", () => {
       .expect(200);
 
     expect(deleteUser.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Deleted User",
-      })
+      expect.objectContaining(userAuthDeleteUserSuccessResponse)
     );
 
     await UserAuth.deleteOne({ email: testmail.deleteuser });

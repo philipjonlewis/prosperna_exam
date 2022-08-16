@@ -28,8 +28,6 @@ import {
 } from "../../helpers/userAuthErrorResponse";
 
 describe("User Auth API - Failure - Log In", () => {
-
-
   beforeEach(async () => {
     await UserAuth.findOneAndDelete({
       email: testUserCredentials.email + "@email.com",
@@ -51,7 +49,7 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
@@ -65,7 +63,7 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
@@ -97,7 +95,7 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userControllerError.statusCode);
+      .expect(userControllerError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userControllerError));
   });
@@ -111,7 +109,7 @@ describe("User Auth API - Failure - Log In", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthenticationError.statusCode);
+      .expect(userAuthenticationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthenticationError));
   });

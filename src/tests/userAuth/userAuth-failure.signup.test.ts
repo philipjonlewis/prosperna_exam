@@ -9,7 +9,6 @@ import {
   afterEach,
   beforeEach,
 } from "vitest";
-import { databaseConnection } from "../../model/dbConnection";
 import UserAuth from "../../model/dbModel/userAuthDbModel";
 import {
   signedRefreshToken,
@@ -50,7 +49,7 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
@@ -83,7 +82,7 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthenticationError.statusCode);
+      .expect(userAuthenticationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthenticationError));
 
@@ -102,7 +101,7 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });
@@ -117,7 +116,7 @@ describe("User Auth API - Failure - Sign Up", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(userAuthValidationError.statusCode);
+      .expect(userAuthValidationError.error.code);
 
     expect(res.body).toEqual(expect.objectContaining(userAuthValidationError));
   });

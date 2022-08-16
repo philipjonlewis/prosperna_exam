@@ -37,7 +37,6 @@ let userId: Types.ObjectId;
 
 describe("Product API - Read - Failure", () => {
   beforeAll(async () => {
-    await databaseConnection("testing");
 
     const newUser = new UserAuth({
       email: testUserCredentials.email,
@@ -74,7 +73,7 @@ describe("Product API - Read - Failure", () => {
       .get("/api_v1/products")
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(cookieAuthenticationError.statusCode);
+      .expect(cookieAuthenticationError.error.code);
 
     expect(getProduct.body).toEqual(
       expect.objectContaining(cookieAuthenticationError)

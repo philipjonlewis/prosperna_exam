@@ -38,7 +38,6 @@ let userId: Types.ObjectId;
 
 describe("Product API - Update - Failure", () => {
   beforeAll(async () => {
-    await databaseConnection("testing");
 
     const newUser = new UserAuth({
       email: testUserCredentials.email,
@@ -76,7 +75,7 @@ describe("Product API - Update - Failure", () => {
       .send({ _id: "678gehk28iyhikjfo2o", ...testProductData })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(cookieAuthenticationError.statusCode);
+      .expect(cookieAuthenticationError.error.code);
 
     expect(editProduct.body).toEqual(
       expect.objectContaining(cookieAuthenticationError)
@@ -103,7 +102,7 @@ describe("Product API - Update - Failure", () => {
       .send(incompleteTestProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(productSanitizationError.statusCode);
+      .expect(productSanitizationError.error.code);
 
     expect(editProduct.body).toEqual(
       expect.objectContaining(productSanitizationError)

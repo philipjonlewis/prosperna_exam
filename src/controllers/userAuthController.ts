@@ -1,6 +1,5 @@
 import path from "path";
 const scriptName = path.basename(__filename);
-import { devEnvironment } from "../helpers/standardErrorResponse";
 
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
@@ -11,6 +10,15 @@ import ProductModel from "../model/dbModel/productsDbModel";
 import { userAgentCleaner } from "../utils/userAgentCleaner";
 
 import { userControllerError } from "../helpers/userAuthErrorResponse";
+import {
+  userAuthSignUpSuccessResponse,
+  userAuthLogInSuccessResponse,
+  userAuthlogOutSuccessResponse,
+  userAuthVerifyUserSuccessResponse,
+  userAuthUpdateEmailSuccessResponse,
+  userAuthUpdatePasswordSuccessResponse,
+  userAuthDeleteUserSuccessResponse,
+} from "../helpers/userAuthSuccessResponse";
 
 import bcrypt from "bcryptjs";
 
@@ -59,16 +67,10 @@ const signUpUserDataController = asyncHandler(
         .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
         .cookie("authentication-access", accessToken, accessCookieOptions)
-        .json({
-          success: true,
-          message: "Successfully Signed Up",
-          payload: {
-            _id: _id.toString(),
-            email: email.toString(),
-          },
-        });
+        .json(await userAuthSignUpSuccessResponse(_id, email));
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -117,16 +119,10 @@ const loginUserDataController = asyncHandler(
         .status(200)
         .cookie("authentication-refresh", refreshToken, refreshCookieOptions)
         .cookie("authentication-access", accessToken, accessCookieOptions)
-        .json({
-          success: true,
-          message: "Successfully logged in",
-          payload: {
-            _id,
-            email,
-          },
-        });
+        .json(await userAuthLogInSuccessResponse(_id, email));
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -139,10 +135,7 @@ const logOutUserDataController = asyncHandler(
         .status(200)
         .clearCookie("authentication-refresh", clearAuthCookieOptions)
         .clearCookie("authentication-access", clearAuthCookieOptions);
-      return res.json({
-        success: true,
-        message: "Logged Out",
-      });
+      return res.json(userAuthlogOutSuccessResponse);
     } catch (error: any) {
       throw new ErrorHandler(userControllerError);
     }
@@ -156,12 +149,10 @@ const verifyUserDataController = asyncHandler(
 
       if (!isUserVerified) throw new Error();
 
-      return res.status(200).json({
-        success: true,
-        message: "User is still logged in",
-      });
+      return res.status(200).json(userAuthVerifyUserSuccessResponse);
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -216,18 +207,17 @@ const updateUserEmailController = asyncHandler(
           // .cookie("authentication-access", accessToken, accessCookieOptions)
           .clearCookie("authentication-refresh", clearAuthCookieOptions)
           .clearCookie("authentication-access", clearAuthCookieOptions)
-          .json({
-            success: true,
-            message: "Successfully changed email - Please Log In Again",
-            payload: {
+          .json(
+            await userAuthUpdateEmailSuccessResponse(
               _id,
-              oldEmail: validatedEditUserEmail.email,
-              email: validatedEditUserEmail.newEmail,
-            },
-          })
+              validatedEditUserEmail.email,
+              validatedEditUserEmail.newEmail
+            )
+          )
       );
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -238,9 +228,6 @@ const updateUserPasswordController = asyncHandler(
     try {
       const { validatedEditUserPassword, accessTokenAuthenticatedUserId } =
         await res.locals;
-
-      // Must use userId for params and have a setting for existing password to new password
-      // const { email, newEmail, password } = validatedEditUserEmail;
 
       const existingUser = await UserAuth.find({
         _id: accessTokenAuthenticatedUserId,
@@ -296,17 +283,11 @@ const updateUserPasswordController = asyncHandler(
           // .cookie("authentication-access", accessToken, accessCookieOptions)
           .clearCookie("authentication-refresh", clearAuthCookieOptions)
           .clearCookie("authentication-access", clearAuthCookieOptions)
-          .json({
-            success: true,
-            message: "Successfully changed password - Please Log In Again",
-            payload: {
-              _id,
-              email,
-            },
-          })
+          .json(await userAuthUpdatePasswordSuccessResponse(_id, email))
       );
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }
@@ -343,12 +324,10 @@ const deleteUserDataController = asyncHandler(
         .status(200)
         .clearCookie("authentication-refresh", clearAuthCookieOptions)
         .clearCookie("authentication-access", clearAuthCookieOptions)
-        .json({
-          success: true,
-          message: "Deleted User",
-        });
+        .json(userAuthDeleteUserSuccessResponse);
     } catch (error: any) {
-      devEnvironment && console.error("Error In File : ", scriptName);
+      process.env.ENVIRONMENT == "development" &&
+        console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
   }

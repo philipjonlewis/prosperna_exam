@@ -38,7 +38,6 @@ let userId: Types.ObjectId;
 
 describe("Product API - Delete - Failure", () => {
   beforeAll(async () => {
-    await databaseConnection("testing");
 
     const newUser = new UserAuth({
       email: testUserCredentials.email,
@@ -76,7 +75,7 @@ describe("Product API - Delete - Failure", () => {
       .send(testProductData)
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(cookieAuthenticationError.statusCode);
+      .expect(cookieAuthenticationError.error.code);
 
     expect(deleteProduct.body).toEqual(
       expect.objectContaining(cookieAuthenticationError)
@@ -105,7 +104,7 @@ describe("Product API - Delete - Failure", () => {
       })
       .set("Accept", "application/json")
       .expect("Content-Type", /json/)
-      .expect(productSanitizationError.statusCode);
+      .expect(productSanitizationError.error.code);
 
     expect(deleteProduct.body).toEqual(
       expect.objectContaining(productSanitizationError)

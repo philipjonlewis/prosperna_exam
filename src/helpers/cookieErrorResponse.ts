@@ -1,9 +1,8 @@
-import { devEnvironment } from "./standardErrorResponse";
 import { standardProductionErrorResponse } from "./standardErrorResponse";
 
-export const cookieAuthenticationError = devEnvironment
-  ? {
-      statusCode: 401,
-      message: "Unauthorized Access",
-    }
-  : standardProductionErrorResponse;
+export const cookieAuthenticationError =
+  process.env.ENVIRONMENT == "development"
+    ? {
+        error: { code: 401, message: "Unauthorized Access" },
+      }
+    : standardProductionErrorResponse;

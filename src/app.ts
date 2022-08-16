@@ -1,19 +1,13 @@
-import express, {
-  Express,
-  Request,
-  Response,
-  RequestHandler,
-  NextFunction,
-} from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 const app: Express = express();
 
-var boolParser = require("express-query-boolean");
 import cookieParser from "cookie-parser";
-
 import helmet from "helmet";
 import cors from "cors";
 import nocache from "nocache";
-require("dotenv").config();
+
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
 import userAuthRoutes from "./routes/userAuthRoutes";
 import productRoutes from "./routes/productRoutes";
@@ -21,8 +15,8 @@ import productRoutes from "./routes/productRoutes";
 import { databaseConnection } from "./model/dbConnection";
 import customErrorMiddleware from "./middleware/custom/customErrorMiddleware";
 
-import morgan from "morgan";
-import rateLimit from "express-rate-limit";
+var boolParser = require("express-query-boolean");
+require("dotenv").config();
 
 app.disable("x-powered-by");
 
@@ -67,8 +61,6 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
   );
   next();
 });
-
-
 
 databaseConnection();
 

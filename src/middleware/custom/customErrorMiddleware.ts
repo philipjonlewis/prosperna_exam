@@ -10,22 +10,13 @@ import express, {
 } from "express";
 
 const customErrorMiddleware = async (
-  error: ErrorRequestHandler | any,
+  err: ErrorRequestHandler | any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { statusCode, message } = error;
-  return (
-    res
-      // .clearCookie("authentication-refresh", { path: "/" })
-      // .clearCookie("authentication-access", { path: "/" })
-      .status(statusCode)
-      .json({
-        statusCode,
-        message,
-      })
-  );
+  const { error } = err;
+  return res.status(error.error.code).json(error);
 };
 
 export default customErrorMiddleware;

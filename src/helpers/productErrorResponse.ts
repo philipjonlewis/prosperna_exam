@@ -1,37 +1,31 @@
-import { devEnvironment } from "./standardErrorResponse";
 import { standardProductionErrorResponse } from "./standardErrorResponse";
 
-export const productSanitizationError = devEnvironment
+export const productSanitizationError = process.env.ENVIRONMENT == "development"
   ? {
-      statusCode: 422,
-      message: "Product Sanitization Error",
+      error: { code: 422, message: "Product Sanitization Error" },
     }
   : standardProductionErrorResponse;
 
-export const productValidationError = devEnvironment
+export const productValidationError = process.env.ENVIRONMENT == "development"
   ? {
-      statusCode: 409,
-      message: "Product Validation Error",
+      error: { code: 409, message: "Product Validation Error" },
     }
   : standardProductionErrorResponse;
 
-export const productAuthenticationError = devEnvironment
+export const productAuthenticationError = process.env.ENVIRONMENT == "development"
   ? {
-      statusCode: 401,
-      message: "Product Authentication Error",
+      error: { code: 401, message: "Product Authentication Error" },
     }
   : standardProductionErrorResponse;
 
-export const productAuthorizationError = devEnvironment
+export const productAuthorizationError = process.env.ENVIRONMENT == "development"
   ? {
-      statusCode: 401,
-      message: "Product Authorization Error",
+      error: { code: 401, message: "Product Authorization Error" },
     }
   : standardProductionErrorResponse;
 
-export const productControllerError = devEnvironment
+export const productControllerError = process.env.ENVIRONMENT == "development"
   ? {
-      statusCode: 500,
-      message: "Something is wrong with our server",
+      error: { code: 500, message: "Something is wrong with our server" },
     }
   : standardProductionErrorResponse;
