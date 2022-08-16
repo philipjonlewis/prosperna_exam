@@ -22,11 +22,15 @@ const dateValidationSchema = Joi.date().required();
 
 const numberValidationSchema = Joi.number();
 
+const publicQueryParams = {
+  count: Joi.number(),
+};
+
 export {
   uuidValidationSchema,
   uuidValidationSchemaNotRequired,
   stringContentValidationSchema,
   booleanValidationSchema,
   dateValidationSchema,
-  numberValidationSchema
+  numberValidationSchema,
 };

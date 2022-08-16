@@ -10,6 +10,7 @@ import nocache from "nocache";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
+import publicRoutes from "./routes/publicRoutes";
 import userAuthRoutes from "./routes/userAuthRoutes";
 import productRoutes from "./routes/productRoutes";
 
@@ -65,7 +66,13 @@ app.use(function (req: Request, res: Response, next: NextFunction) {
 
 databaseConnection();
 
+// All routes the can be publicly access can be found in the routes below
+app.use(`${config.URL}/public`, publicRoutes);
+
+// All User Auth routes can be found in the function below
 app.use(`${config.URL}/user`, userAuthRoutes);
+
+// All Product routes can be found in the function below
 app.use(`${config.URL}/products`, productRoutes);
 
 app.get("*", (req: Request, res: Response) => {

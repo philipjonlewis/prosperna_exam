@@ -9,7 +9,7 @@ const productSchema = new Schema(
   {
     product_owner: {
       type: Schema.Types.ObjectId,
-      ref: "userAuthSchema",
+      ref: "auth",
       required: [true, "All products must have an owner"],
     },
     product_name: {
