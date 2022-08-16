@@ -1,6 +1,6 @@
 import path from "path";
 const scriptName = path.basename(__filename);
-
+import { config } from "../config";
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
 import ErrorHandler from "../middleware/custom/modifiedErrorHandler";
@@ -47,7 +47,7 @@ const addProductDataController = asyncHandler(
           )
         );
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
@@ -67,7 +67,7 @@ const getProductDataController = asyncHandler(
 
       return res.status(201).json(await productReadSuccessResponse(products));
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
@@ -93,7 +93,7 @@ const editProductDataController = asyncHandler(
         .status(200)
         .json(await productEditSuccessResponse(editedProductData));
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }
@@ -127,7 +127,7 @@ const deleteProductDataController = asyncHandler(
         .status(200)
         .json(await productDeleteSuccessResponse(deletedProductData));
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(productControllerError);
     }

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import type { CookieOptions } from "express";
+import { config } from "../config";
 
 export const signedRefreshToken = async (_id: string, email: string) => {
   return jwt.sign({ token: _id }, process.env.AUTH_TOKEN_KEY as string, {
@@ -27,9 +28,9 @@ export const refreshCookieOptions: CookieOptions = {
   // expires: new Date(Date.now() + 6048000 * 4),
   maxAge: 241920000,
   // make secure true upon deployment
-  secure: process.env.ENVIRONMENT == "production" ? true : false,
+  secure: config.environment === "production" ? true : false,
   httpOnly: false,
-  sameSite: process.env.ENVIRONMENT == "production" ? "none" : false,
+  sameSite: config.environment === "production" ? "none" : false,
 };
 
 export const accessCookieOptions: CookieOptions = {
@@ -37,15 +38,15 @@ export const accessCookieOptions: CookieOptions = {
   // expires in 28 days
   maxAge: 86400000,
   // make secure true upon deployment
-  secure: process.env.ENVIRONMENT == "production" ? true : false,
+  secure: config.environment === "production" ? true : false,
   httpOnly: false,
-  sameSite: process.env.ENVIRONMENT == "production" ? "none" : false,
+  sameSite: config.environment === "production" ? "none" : false,
 };
 
 export const clearAuthCookieOptions = {
   //  enable domain on deployment
   domain:
-    process.env.ENVIRONMENT == "production"
+    config.environment === "production"
       ? "https://taptaptask-backend.herokuapp.com"
       : "",
   path: "/",

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import path from "path";
+import { config } from "../config";
 require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 const mongooseOptions: any = {
   useNewUrlParser: true,
@@ -7,9 +8,9 @@ const mongooseOptions: any = {
 };
 
 const dbPort: any =
-  process.env.ENVIRONMENT == "development"
+  config.environment == "development"
     ? process.env.DB_PORT_DEVELOPMENT
-    : "";
+    : process.env.DB_PORT_PRODUCTION;
 
 const databaseConnection = async () => {
   try {

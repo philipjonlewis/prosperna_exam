@@ -1,29 +1,30 @@
 import { standardProductionErrorResponse } from "./standardErrorResponse";
+import { config } from "../config";
 
 export const userAuthSanitizationError =
-  process.env.ENVIRONMENT == "development"
+  config.environment === "development"
     ? {
         error: { code: 422, message: "User Sanitization Error" },
       }
-    : standardProductionErrorResponse;
+    : standardProductionErrorResponse(422);
 
 export const userAuthValidationError =
-  process.env.ENVIRONMENT == "development"
+  config.environment === "development"
     ? {
         error: { code: 409, message: "User Validation Error" },
       }
-    : standardProductionErrorResponse;
+    : standardProductionErrorResponse(409);
 
 export const userAuthenticationError =
-  process.env.ENVIRONMENT == "development"
+  config.environment === "development"
     ? {
         error: { code: 401, message: "User Authentication Error" },
       }
-    : standardProductionErrorResponse;
+    : standardProductionErrorResponse(401);
 
 export const userControllerError =
-  process.env.ENVIRONMENT == "development"
+  config.environment === "development"
     ? {
         error: { code: 500, message: "Something is wrong with our server" },
       }
-    : standardProductionErrorResponse;
+    : standardProductionErrorResponse(500);

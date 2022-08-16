@@ -1,5 +1,6 @@
 import path from "path";
 const scriptName = path.basename(__filename);
+import { config } from "../config";
 
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import asyncHandler from "../handlers/asyncHandler";
@@ -69,7 +70,7 @@ const signUpUserDataController = asyncHandler(
         .cookie("authentication-access", accessToken, accessCookieOptions)
         .json(await userAuthSignUpSuccessResponse(_id, email));
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
@@ -121,7 +122,7 @@ const loginUserDataController = asyncHandler(
         .cookie("authentication-access", accessToken, accessCookieOptions)
         .json(await userAuthLogInSuccessResponse(_id, email));
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
@@ -151,7 +152,7 @@ const verifyUserDataController = asyncHandler(
 
       return res.status(200).json(userAuthVerifyUserSuccessResponse);
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
@@ -216,7 +217,7 @@ const updateUserEmailController = asyncHandler(
           )
       );
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
@@ -286,7 +287,7 @@ const updateUserPasswordController = asyncHandler(
           .json(await userAuthUpdatePasswordSuccessResponse(_id, email))
       );
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }
@@ -326,7 +327,7 @@ const deleteUserDataController = asyncHandler(
         .clearCookie("authentication-access", clearAuthCookieOptions)
         .json(userAuthDeleteUserSuccessResponse);
     } catch (error: any) {
-      process.env.ENVIRONMENT == "development" &&
+      config.environment === "development" &&
         console.error("Error In File : ", scriptName);
       throw new ErrorHandler(userControllerError);
     }

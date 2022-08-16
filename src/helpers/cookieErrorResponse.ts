@@ -1,8 +1,9 @@
 import { standardProductionErrorResponse } from "./standardErrorResponse";
+import { config } from "../config";
 
 export const cookieAuthenticationError =
-  process.env.ENVIRONMENT == "development"
+  config.environment === "development"
     ? {
         error: { code: 401, message: "Unauthorized Access" },
       }
-    : standardProductionErrorResponse;
+    : standardProductionErrorResponse(401);
