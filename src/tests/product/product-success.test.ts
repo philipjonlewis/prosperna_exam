@@ -35,10 +35,15 @@ const testProductData = {
 
 let userId: Types.ObjectId;
 
+import {
+  productCreateSuccessResponse,
+  productReadSuccessResponse,
+  productEditSuccessResponse,
+  productDeleteSuccessResponse,
+} from "../../helpers/productSuccessResponse";
+
 describe("Product API - Success", () => {
   beforeAll(async () => {
-    await databaseConnection("testing");
-
     const newUser = new UserAuth({
       email: testUserCredentials.email,
       password: testUserCredentials.password,
@@ -83,17 +88,24 @@ describe("Product API - Success", () => {
       .expect("Content-Type", /json/)
       .expect(201);
 
+    const {
+      _id,
+      product_name,
+      product_description,
+      product_price,
+      product_tag,
+    } = addProduct.body.payload;
+
     expect(addProduct.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully added a product",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          product_name: expect.any(String),
-          product_description: expect.any(String),
-          product_price: expect.any(Number),
-        }),
-      })
+      expect.objectContaining(
+        productCreateSuccessResponse(
+          _id,
+          product_name,
+          product_description,
+          product_price,
+          product_tag
+        )
+      )
     );
   });
 
@@ -103,7 +115,7 @@ describe("Product API - Success", () => {
       password: testUserCredentials.password,
     });
 
-    await request(app)
+    const product = await request(app)
       .post("/api_v1/products")
       .set("Cookie", [...loginRes.header["set-cookie"]])
       .send(testProductData)
@@ -119,20 +131,7 @@ describe("Product API - Success", () => {
       .expect(201);
 
     expect(getProduct.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully reading products",
-        productCount: expect.any(Number),
-        payload: expect.arrayContaining([
-          expect.objectContaining({
-            _id: expect.any(String),
-            product_name: expect.any(String),
-            product_description: expect.any(String),
-            product_price: expect.any(Number),
-            product_tag: expect.arrayContaining([expect.any(String)]),
-          }),
-        ]),
-      })
+      expect.objectContaining(productReadSuccessResponse(product))
     );
   });
 
@@ -166,18 +165,7 @@ describe("Product API - Success", () => {
       .expect(200);
 
     expect(editProduct.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully edited product",
-        payload: expect.objectContaining({
-          _id: expect.any(String),
-          product_owner: expect.any(String),
-          product_name: expect.any(String),
-          product_description: expect.any(String),
-          product_price: expect.any(Number),
-          product_tag: expect.arrayContaining([expect.any(String)]),
-        }),
-      })
+      expect.objectContaining(productEditSuccessResponse(editProduct))
     );
   });
 
@@ -207,14 +195,7 @@ describe("Product API - Success", () => {
       .expect(200);
 
     expect(deleteProduct.body).toEqual(
-      expect.objectContaining({
-        success: true,
-        message: "Successfully deleted a product",
-        payload: expect.objectContaining({
-          acknowledged: expect.any(Boolean),
-          deletedCount: expect.any(Number),
-        }),
-      })
+      expect.objectContaining(productDeleteSuccessResponse(deleteProduct))
     );
   });
 });

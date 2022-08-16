@@ -17,7 +17,7 @@ export const userAuthLogInSuccessResponse = async (_id: any, email: string) => {
     success: true,
     message: "Successfully Logged In",
     payload: {
-      _id: _id.toString(),
+      _id: await _id.toString(),
       email: email.toString(),
     },
   };

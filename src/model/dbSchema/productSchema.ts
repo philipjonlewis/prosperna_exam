@@ -29,7 +29,7 @@ const productSchema = new Schema({
         type: String,
       },
     ],
-    select: false,
+    select: true,
   },
 });
 

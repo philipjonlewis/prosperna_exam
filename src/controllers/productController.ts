@@ -8,6 +8,12 @@ import { productControllerError } from "../helpers/productErrorResponse";
 
 import ProductModel from "../model/dbModel/productsDbModel";
 import type { TypedProductControllerResponseBody } from "../types/productTypes";
+import {
+  productCreateSuccessResponse,
+  productReadSuccessResponse,
+  productEditSuccessResponse,
+  productDeleteSuccessResponse,
+} from "../helpers/productSuccessResponse";
 
 const addProductDataController = asyncHandler(
   async (req: Request, res: TypedProductControllerResponseBody) => {
@@ -16,17 +22,25 @@ const addProductDataController = asyncHandler(
 
       const newProduct = new ProductModel(authorizedAddProductData);
       newProduct.save();
+      const {
+        _id,
+        product_name,
+        product_description,
+        product_price,
+        product_tag,
+      } = newProduct;
 
-      return res.status(201).json({
-        success: true,
-        message: "Successfully added a product",
-        payload: {
-          _id: newProduct._id,
-          product_name: newProduct.product_name,
-          product_description: newProduct.product_description,
-          product_price: newProduct.product_price,
-        },
-      });
+      return res
+        .status(201)
+        .json(
+          await productCreateSuccessResponse(
+            _id,
+            product_name,
+            product_description,
+            product_price,
+            product_tag
+          )
+        );
     } catch (error: any) {
       process.env.ENVIRONMENT == "development" &&
         console.error("Error In File : ", scriptName);
@@ -46,12 +60,7 @@ const getProductDataController = asyncHandler(
         product_owner: accessTokenAuthenticatedUserId,
       }).select("-__v -product_owner +_id +product_tag");
 
-      return res.status(201).json({
-        success: true,
-        message: "Successfully reading products",
-        productCount: products.length,
-        payload: products,
-      });
+      return res.status(201).json(await productReadSuccessResponse(products));
     } catch (error: any) {
       process.env.ENVIRONMENT == "development" &&
         console.error("Error In File : ", scriptName);
@@ -75,11 +84,9 @@ const editProductDataController = asyncHandler(
         { new: true }
       ).select("-__v +product_tag");
 
-      return res.status(200).json({
-        success: true,
-        message: "Successfully edited product",
-        payload: editedProductData,
-      });
+      return res
+        .status(200)
+        .json(await productEditSuccessResponse(editedProductData));
     } catch (error: any) {
       process.env.ENVIRONMENT == "development" &&
         console.error("Error In File : ", scriptName);
@@ -111,11 +118,9 @@ const deleteProductDataController = asyncHandler(
         });
       }
 
-      return res.status(200).json({
-        success: true,
-        message: "Successfully deleted a product",
-        payload: deletedProductData,
-      });
+      return res
+        .status(200)
+        .json(await productDeleteSuccessResponse(deletedProductData));
     } catch (error: any) {
       process.env.ENVIRONMENT == "development" &&
         console.error("Error In File : ", scriptName);
