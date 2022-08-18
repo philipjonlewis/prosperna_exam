@@ -1,16 +1,16 @@
-import path from "path";
+import path from 'path';
 const scriptName = path.basename(__filename);
 
-import { Request, Response, RequestHandler, NextFunction } from "express";
+import { Request, Response, RequestHandler, NextFunction } from 'express';
 
-import asyncHandler from "../../handlers/asyncHandler";
-import ErrorHandler from "../custom/modifiedErrorHandler";
-import UserAuth from "../../model/dbModel/userAuthDbModel";
+import asyncHandler from '../../handlers/asyncHandler';
+import ErrorHandler from '../custom/modifiedErrorHandler';
+import UserAuth from '../../model/dbModel/userAuthDbModel';
 
-import { userAuthenticationError } from "../../helpers/userAuthErrorResponse";
+import { userAuthenticationError } from '../../helpers/userAuthErrorResponse';
 
-import type { TypedUserAuthValidatedResponseBody } from "../../types/userAuthTypes";
-import type { TypedAccessTokenAuthenticatedResponseBody } from "../../types/cookieAuthTypes";
+import type { TypedUserAuthValidatedResponseBody } from '../../types/userAuthTypes';
+import type { TypedAccessTokenAuthenticatedResponseBody } from '../../types/cookieAuthTypes';
 
 const signUpAuthenticator = asyncHandler(
   async (
@@ -64,7 +64,7 @@ const verifyUserAuthenticator = asyncHandler(
     try {
       if (
         await UserAuth.exists({
-          _id: res.locals.accessTokenAuthenticatedUserId,
+          _id: res.locals.accessTokenAuthenticatedUserId.toString(),
         })
       ) {
         res.locals.isUserVerified = true;
@@ -77,29 +77,4 @@ const verifyUserAuthenticator = asyncHandler(
   }
 ) as RequestHandler;
 
-const userCredentialsAuthenticator = asyncHandler(
-  async (
-    req: Request,
-    res: TypedAccessTokenAuthenticatedResponseBody,
-    next: NextFunction
-  ) => {
-    try {
-      if (
-        await UserAuth.exists({
-          _id: res.locals.accessTokenAuthenticatedUserId.toString(),
-        })
-      )
-        return next();
-      throw new Error();
-    } catch (error: any) {
-      throw new ErrorHandler(userAuthenticationError);
-    }
-  }
-) as RequestHandler;
-
-export {
-  signUpAuthenticator,
-  logInAuthenticator,
-  verifyUserAuthenticator,
-  userCredentialsAuthenticator,
-};
+export { signUpAuthenticator, logInAuthenticator, verifyUserAuthenticator };

@@ -1,5 +1,5 @@
-import { Router } from "express";
-import userAgent from "express-useragent";
+import { Router } from 'express';
+import userAgent from 'express-useragent';
 
 const router = Router();
 // Added a useragent middleware to store user device data for added security
@@ -8,7 +8,7 @@ router.use(userAgent.express());
 import {
   refreshCookieAuthentication,
   accessCookieAuthentication,
-} from "../infosec/cookies/authentication/cookieAuthentication";
+} from '../infosec/cookies/authentication/cookieAuthentication';
 
 import {
   signUpUserDataSanitizer,
@@ -16,7 +16,7 @@ import {
   updateUserEmailSanitizer,
   updateUserPasswordSanitizer,
   deleteUserDataSanitizer,
-} from "../middleware/sanitization/userAuthSanitizer";
+} from '../middleware/sanitization/userAuthSanitizer';
 
 import {
   signUpUserDataValidator,
@@ -24,14 +24,13 @@ import {
   updateUserEmailValidator,
   updateUserPasswordValidator,
   deleteUserDataValidator,
-} from "../middleware/validation/userAuthValidator";
+} from '../middleware/validation/userAuthValidator';
 
 import {
   signUpAuthenticator,
   logInAuthenticator,
   verifyUserAuthenticator,
-  userCredentialsAuthenticator,
-} from "../middleware/authentication/userAuthAuthentication";
+} from '../middleware/authentication/userAuthAuthentication';
 
 import {
   signUpUserDataController,
@@ -41,7 +40,7 @@ import {
   updateUserEmailController,
   updateUserPasswordController,
   deleteUserDataController,
-} from "../controllers/userAuthController";
+} from '../controllers/userAuthController';
 
 /**
  * * Router : User Auth
@@ -77,7 +76,7 @@ import {
 // ! Route : http://localhost:4000/api_v1/user/signup
 // * Description : API Endpoint for signing up new user
 router
-  .route("/signup")
+  .route('/signup')
   .post([
     signUpUserDataSanitizer,
     signUpUserDataValidator,
@@ -88,7 +87,7 @@ router
 // ! Route : http://localhost:4000/api_v1/user/login
 // * Description : API Endpoint for user log in
 router
-  .route("/login")
+  .route('/login')
   .post([
     logInUserDataSanitizer,
     logInUserDataValidator,
@@ -117,7 +116,7 @@ router
 // ! Route : http://localhost:4000/api_v1/user/logout
 // * Description : API Endpoint for user log out
 router
-  .route("/logout")
+  .route('/logout')
   .get([
     refreshCookieAuthentication,
     accessCookieAuthentication,
@@ -128,7 +127,7 @@ router
 // ! Route : http://localhost:4000/api_v1/user/verify
 // * Description : API Endpoint to verify if user is still logged in
 router
-  .route("/verify")
+  .route('/verify')
   .get([
     refreshCookieAuthentication,
     accessCookieAuthentication,
@@ -164,39 +163,39 @@ router
 // ! Route : http://localhost:4000/api_v1/user/update/email
 // * Description : API Endpoint for user to update email
 router
-  .route("/update/email")
+  .route('/update/email')
   .patch([
     refreshCookieAuthentication,
     accessCookieAuthentication,
     updateUserEmailSanitizer,
     updateUserEmailValidator,
-    userCredentialsAuthenticator,
+    verifyUserAuthenticator,
     updateUserEmailController,
   ]);
 
 // ! Route : http://localhost:4000/api_v1/user/update/password
 // * Description : API Endpoint for user to update password
 router
-  .route("/update/password")
+  .route('/update/password')
   .patch([
     refreshCookieAuthentication,
     accessCookieAuthentication,
     updateUserPasswordSanitizer,
     updateUserPasswordValidator,
-    userCredentialsAuthenticator,
+    verifyUserAuthenticator,
     updateUserPasswordController,
   ]);
 
 // ! Route : http://localhost:4000/api_v1/user/delete
 // * Description : API Endpoint for user to delete their own account
 router
-  .route("/delete")
+  .route('/delete')
   .delete([
     refreshCookieAuthentication,
     accessCookieAuthentication,
     deleteUserDataSanitizer,
     deleteUserDataValidator,
-    userCredentialsAuthenticator,
+    verifyUserAuthenticator,
     deleteUserDataController,
   ]);
 

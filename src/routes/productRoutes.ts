@@ -1,37 +1,37 @@
-import { Router } from "express";
+import { Router } from 'express';
 const router = Router();
 
 import {
   refreshCookieAuthentication,
   accessCookieAuthentication,
-} from "../infosec/cookies/authentication/cookieAuthentication";
+} from '../infosec/cookies/authentication/cookieAuthentication';
 
-import { userCredentialsAuthenticator } from "../middleware/authentication/userAuthAuthentication";
+import { verifyUserAuthenticator } from '../middleware/authentication/userAuthAuthentication';
 
 import {
   addProductDataSanitizer,
   editProductDataSanitizer,
   deleteProductDataSanitizer,
-} from "../middleware/sanitization/productDataSanitizer";
+} from '../middleware/sanitization/productDataSanitizer';
 
 import {
   addProductDataValidator,
   editProductDataValidator,
   deleteProductDataValidator,
-} from "../middleware/validation/productDataValidator";
+} from '../middleware/validation/productDataValidator';
 
 import {
   addProductDataAuthorization,
   editProductDataAuthorization,
   deleteProductDataAuthorization,
-} from "../middleware/authorization/productAuthorization";
+} from '../middleware/authorization/productAuthorization';
 
 import {
   addProductDataController,
   getProductDataController,
   editProductDataController,
   deleteProductDataController,
-} from "../controllers/productController";
+} from '../controllers/productController';
 
 /**
  * * Router : Product
@@ -54,7 +54,7 @@ router.use([
 
   // User Credentials Authenticator
   //    - Authenticates if user with credentials from the cookies are valid
-  userCredentialsAuthenticator,
+  verifyUserAuthenticator,
 ]);
 
 /**
@@ -80,7 +80,7 @@ router.use([
  */
 
 router
-  .route("/")
+  .route('/')
 
   .get([
     // ! Route : http://localhost:4000/api_v1/products?productId=
