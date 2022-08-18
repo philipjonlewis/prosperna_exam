@@ -1,7 +1,6 @@
+import jwt from 'jsonwebtoken';
 
-import jwt from "jsonwebtoken";
-
-import UserAuth from "../../../model/dbModel/userAuthDbModel";
+import UserAuth from '../../../model/dbModel/userAuthDbModel';
 
 const refreshTokenHandler = async (user: any) => {
   const refreshToken = await jwt.sign(
@@ -12,9 +11,9 @@ const refreshTokenHandler = async (user: any) => {
     {
       issuer: await user._id,
       subject: await user.email,
-      audience: "https://www.datetask.com",
-      expiresIn: "672h",
-      algorithm: "HS256",
+      audience: 'https://www.prosperna.com',
+      expiresIn: '672h',
+      algorithm: 'HS256',
     }
   );
   await UserAuth.findByIdAndUpdate(await user._id, {
@@ -28,8 +27,8 @@ const accessTokenHandler = async (idValue: any) => {
   const newAccessToken = jwt.sign({ access: await idValue }, await idValue, {
     issuer: await idValue,
     subject: await idValue,
-    audience: "https://www.datetask.com",
-    expiresIn: "1800000",
+    audience: 'https://www.prosperna.com',
+    expiresIn: '1800000',
   });
   return newAccessToken;
 };

@@ -29,7 +29,6 @@ const signUpAuthenticator = asyncHandler(
     } catch (error: any) {
       throw new ErrorHandler(userAuthenticationError);
     }
-    //if email and password exists do not process
   }
 ) as RequestHandler;
 
