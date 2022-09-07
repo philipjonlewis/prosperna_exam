@@ -52,7 +52,7 @@ Made via Postman
 5. Make a .env file with the following code
 
    ```
-    DB_PORT_DEVELOPMENT=*Add MongoDB development port i.e. mongodb://127.0.0.1:27017/prosperna*
+    DB_PORT_DEVELOPMENT=*Add MongoDB development port i.e. mongodb://127.0.0.1:27017/user_product_crud*
 
     DB_PORT_PRODUCTION=*Add MongoDB production port*
 
